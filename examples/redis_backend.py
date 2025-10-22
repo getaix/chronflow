@@ -7,10 +7,10 @@
 
 import asyncio
 
-from fscheduler import Scheduler, SchedulerConfig, cron, interval
+from chronflow import Scheduler, SchedulerConfig, cron, interval
 
 try:
-    from fscheduler.backends import RedisBackend
+    from chronflow.backends import RedisBackend
 except ImportError:
     exit(1)
 
@@ -18,7 +18,7 @@ except ImportError:
 # 配置 Redis 后端
 redis_backend = RedisBackend(
     url="redis://localhost:6379/0",
-    queue_name="fscheduler:demo",
+    queue_name="chronflow:demo",
     max_connections=10,
 )
 

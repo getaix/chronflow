@@ -13,8 +13,8 @@ from typing import Any, ParamSpec, TypeVar
 from croniter import croniter
 from pydantic import BaseModel, Field
 
-from fscheduler.config import TaskMetrics
-from fscheduler.retry import RetryPolicy
+from chronflow.config import TaskMetrics
+from chronflow.retry import RetryPolicy
 
 P = ParamSpec("P")
 T = TypeVar("T")

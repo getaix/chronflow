@@ -16,10 +16,10 @@ class TestRabbitMQBackendMocked:
     """RabbitMQ 后端 mock 测试类。"""
 
     @pytest.mark.asyncio
-    @patch("fscheduler.backends.rabbitmq_backend.connect_robust", new_callable=AsyncMock)
+    @patch("chronflow.backends.rabbitmq_backend.connect_robust", new_callable=AsyncMock)
     async def test_connect(self, mock_connect):
         """测试连接 RabbitMQ。"""
-        from fscheduler.backends.rabbitmq_backend import RabbitMQBackend
+        from chronflow.backends.rabbitmq_backend import RabbitMQBackend
 
         # 创建 mock 对象
         mock_connection = AsyncMock()
@@ -43,10 +43,10 @@ class TestRabbitMQBackendMocked:
         mock_channel.declare_queue.assert_called_once()
 
     @pytest.mark.asyncio
-    @patch("fscheduler.backends.rabbitmq_backend.connect_robust", new_callable=AsyncMock)
+    @patch("chronflow.backends.rabbitmq_backend.connect_robust", new_callable=AsyncMock)
     async def test_disconnect(self, mock_connect):
         """测试断开 RabbitMQ 连接。"""
-        from fscheduler.backends.rabbitmq_backend import RabbitMQBackend
+        from chronflow.backends.rabbitmq_backend import RabbitMQBackend
 
         mock_connection = AsyncMock()
         mock_channel = AsyncMock()
@@ -68,11 +68,11 @@ class TestRabbitMQBackendMocked:
         assert backend._connection is None
 
     @pytest.mark.asyncio
-    @patch("fscheduler.backends.rabbitmq_backend.connect_robust", new_callable=AsyncMock)
-    @patch("fscheduler.backends.rabbitmq_backend.Message")
+    @patch("chronflow.backends.rabbitmq_backend.connect_robust", new_callable=AsyncMock)
+    @patch("chronflow.backends.rabbitmq_backend.Message")
     async def test_enqueue(self, mock_message_class, mock_connect):
         """测试入队。"""
-        from fscheduler.backends.rabbitmq_backend import RabbitMQBackend
+        from chronflow.backends.rabbitmq_backend import RabbitMQBackend
 
         mock_connection = AsyncMock()
         mock_channel = AsyncMock()
@@ -107,7 +107,7 @@ class TestRabbitMQBackendMocked:
     @pytest.mark.asyncio
     async def test_enqueue_without_connection(self):
         """测试未连接时入队。"""
-        from fscheduler.backends.rabbitmq_backend import RabbitMQBackend
+        from chronflow.backends.rabbitmq_backend import RabbitMQBackend
 
         backend = RabbitMQBackend()
 
@@ -121,12 +121,12 @@ class TestRabbitMQBackendMocked:
             )
 
     @pytest.mark.asyncio
-    @patch("fscheduler.backends.rabbitmq_backend.connect_robust", new_callable=AsyncMock)
+    @patch("chronflow.backends.rabbitmq_backend.connect_robust", new_callable=AsyncMock)
     async def test_dequeue(self, mock_connect):
         """测试出队。"""
         import json
 
-        from fscheduler.backends.rabbitmq_backend import RabbitMQBackend
+        from chronflow.backends.rabbitmq_backend import RabbitMQBackend
 
         # 创建 mock message
         mock_message = AsyncMock()
@@ -164,7 +164,7 @@ class TestRabbitMQBackendMocked:
     @pytest.mark.asyncio
     async def test_dequeue_without_connection(self):
         """测试未连接时出队。"""
-        from fscheduler.backends.rabbitmq_backend import RabbitMQBackend
+        from chronflow.backends.rabbitmq_backend import RabbitMQBackend
 
         backend = RabbitMQBackend()
 
@@ -172,10 +172,10 @@ class TestRabbitMQBackendMocked:
             await backend.dequeue(limit=1)
 
     @pytest.mark.asyncio
-    @patch("fscheduler.backends.rabbitmq_backend.connect_robust", new_callable=AsyncMock)
+    @patch("chronflow.backends.rabbitmq_backend.connect_robust", new_callable=AsyncMock)
     async def test_acknowledge(self, mock_connect):
         """测试确认任务。"""
-        from fscheduler.backends.rabbitmq_backend import RabbitMQBackend
+        from chronflow.backends.rabbitmq_backend import RabbitMQBackend
 
         mock_connection = AsyncMock()
         mock_channel = AsyncMock()
@@ -202,7 +202,7 @@ class TestRabbitMQBackendMocked:
     @pytest.mark.asyncio
     async def test_acknowledge_without_connection(self):
         """测试未连接时确认。"""
-        from fscheduler.backends.rabbitmq_backend import RabbitMQBackend
+        from chronflow.backends.rabbitmq_backend import RabbitMQBackend
 
         backend = RabbitMQBackend()
 
@@ -210,10 +210,10 @@ class TestRabbitMQBackendMocked:
             await backend.acknowledge("task1")
 
     @pytest.mark.asyncio
-    @patch("fscheduler.backends.rabbitmq_backend.connect_robust", new_callable=AsyncMock)
+    @patch("chronflow.backends.rabbitmq_backend.connect_robust", new_callable=AsyncMock)
     async def test_reject(self, mock_connect):
         """测试拒绝任务。"""
-        from fscheduler.backends.rabbitmq_backend import RabbitMQBackend
+        from chronflow.backends.rabbitmq_backend import RabbitMQBackend
 
         mock_connection = AsyncMock()
         mock_channel = AsyncMock()
@@ -240,7 +240,7 @@ class TestRabbitMQBackendMocked:
     @pytest.mark.asyncio
     async def test_reject_without_connection(self):
         """测试未连接时拒绝。"""
-        from fscheduler.backends.rabbitmq_backend import RabbitMQBackend
+        from chronflow.backends.rabbitmq_backend import RabbitMQBackend
 
         backend = RabbitMQBackend()
 
@@ -248,10 +248,10 @@ class TestRabbitMQBackendMocked:
             await backend.reject("task1", requeue=False)
 
     @pytest.mark.asyncio
-    @patch("fscheduler.backends.rabbitmq_backend.connect_robust", new_callable=AsyncMock)
+    @patch("chronflow.backends.rabbitmq_backend.connect_robust", new_callable=AsyncMock)
     async def test_get_queue_size(self, mock_connect):
         """测试获取队列大小。"""
-        from fscheduler.backends.rabbitmq_backend import RabbitMQBackend
+        from chronflow.backends.rabbitmq_backend import RabbitMQBackend
 
         mock_connection = AsyncMock()
         mock_channel = AsyncMock()
@@ -279,7 +279,7 @@ class TestRabbitMQBackendMocked:
     @pytest.mark.asyncio
     async def test_get_queue_size_without_connection(self):
         """测试未连接时获取队列大小。"""
-        from fscheduler.backends.rabbitmq_backend import RabbitMQBackend
+        from chronflow.backends.rabbitmq_backend import RabbitMQBackend
 
         backend = RabbitMQBackend()
 
@@ -287,10 +287,10 @@ class TestRabbitMQBackendMocked:
             await backend.get_queue_size()
 
     @pytest.mark.asyncio
-    @patch("fscheduler.backends.rabbitmq_backend.connect_robust", new_callable=AsyncMock)
+    @patch("chronflow.backends.rabbitmq_backend.connect_robust", new_callable=AsyncMock)
     async def test_clear(self, mock_connect):
         """测试清空队列。"""
-        from fscheduler.backends.rabbitmq_backend import RabbitMQBackend
+        from chronflow.backends.rabbitmq_backend import RabbitMQBackend
 
         mock_connection = AsyncMock()
         mock_channel = AsyncMock()
@@ -314,7 +314,7 @@ class TestRabbitMQBackendMocked:
     @pytest.mark.asyncio
     async def test_clear_without_connection(self):
         """测试未连接时清空队列。"""
-        from fscheduler.backends.rabbitmq_backend import RabbitMQBackend
+        from chronflow.backends.rabbitmq_backend import RabbitMQBackend
 
         backend = RabbitMQBackend()
 
@@ -322,10 +322,10 @@ class TestRabbitMQBackendMocked:
             await backend.clear()
 
     @pytest.mark.asyncio
-    @patch("fscheduler.backends.rabbitmq_backend.connect_robust", new_callable=AsyncMock)
+    @patch("chronflow.backends.rabbitmq_backend.connect_robust", new_callable=AsyncMock)
     async def test_health_check(self, mock_connect):
         """测试健康检查。"""
-        from fscheduler.backends.rabbitmq_backend import RabbitMQBackend
+        from chronflow.backends.rabbitmq_backend import RabbitMQBackend
 
         mock_connection = AsyncMock()
         mock_channel = AsyncMock()
@@ -346,10 +346,10 @@ class TestRabbitMQBackendMocked:
         assert result is True
 
     @pytest.mark.asyncio
-    @patch("fscheduler.backends.rabbitmq_backend.connect_robust", new_callable=AsyncMock)
+    @patch("chronflow.backends.rabbitmq_backend.connect_robust", new_callable=AsyncMock)
     async def test_health_check_failure(self, mock_connect):
         """测试健康检查失败。"""
-        from fscheduler.backends.rabbitmq_backend import RabbitMQBackend
+        from chronflow.backends.rabbitmq_backend import RabbitMQBackend
 
         mock_connection = AsyncMock()
         mock_channel = AsyncMock()

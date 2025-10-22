@@ -9,7 +9,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
-from fscheduler.backends.base import QueueBackend
+from chronflow.backends.base import QueueBackend
 
 
 class SQLiteBackend(QueueBackend):
@@ -29,7 +29,7 @@ class SQLiteBackend(QueueBackend):
 
     def __init__(
         self,
-        db_path: str | Path = "fscheduler.db",
+        db_path: str | Path = "chronflow.db",
         table_name: str = "task_queue",
     ) -> None:
         """初始化 SQLite 后端。

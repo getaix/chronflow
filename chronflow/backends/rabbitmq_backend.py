@@ -12,7 +12,7 @@ try:
 except ImportError as err:
     raise ImportError("RabbitMQ 后端需要 aio-pika 包。安装方式: pip install aio-pika") from err
 
-from fscheduler.backends.base import QueueBackend
+from chronflow.backends.base import QueueBackend
 
 
 class RabbitMQBackend(QueueBackend):
@@ -30,7 +30,7 @@ class RabbitMQBackend(QueueBackend):
     def __init__(
         self,
         url: str = "amqp://guest:guest@localhost:5672/",
-        queue_name: str = "fscheduler_tasks",
+        queue_name: str = "chronflow_tasks",
         durable: bool = True,
         prefetch_count: int = 10,
     ) -> None:

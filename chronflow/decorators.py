@@ -7,8 +7,8 @@ from datetime import datetime, timedelta
 from functools import wraps
 from typing import Any, ParamSpec, TypeVar
 
-from fscheduler.retry import RetryPolicy
-from fscheduler.task import ScheduleType, Task, TaskConfig
+from chronflow.retry import RetryPolicy
+from chronflow.task import ScheduleType, Task, TaskConfig
 
 P = ParamSpec("P")
 T = TypeVar("T")
@@ -134,7 +134,7 @@ def scheduled(
             pass
 
         # 保存任务引用到函数属性
-        func.__fscheduler_task__ = task  # type: ignore
+        func.__chronflow_task__ = task  # type: ignore
 
         @wraps(func)
         async def wrapper(*args: P.args, **kwargs: P.kwargs) -> T:

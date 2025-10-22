@@ -4,7 +4,7 @@
 
 ## LoggerAdapter (抽象基类)
 
-::: fscheduler.logging.LoggerAdapter
+::: chronflow.logging.LoggerAdapter
     options:
       show_source: false
       heading_level: 3
@@ -13,7 +13,7 @@
 
 ## StructlogAdapter
 
-::: fscheduler.logging.StructlogAdapter
+::: chronflow.logging.StructlogAdapter
     options:
       show_source: false
       heading_level: 3
@@ -22,7 +22,7 @@
 
 ## LoguruAdapter
 
-::: fscheduler.logging.LoguruAdapter
+::: chronflow.logging.LoguruAdapter
     options:
       show_source: false
       heading_level: 3
@@ -31,7 +31,7 @@
 
 ## StdlibAdapter
 
-::: fscheduler.logging.StdlibAdapter
+::: chronflow.logging.StdlibAdapter
     options:
       show_source: false
       heading_level: 3
@@ -40,7 +40,7 @@
 
 ## NoOpAdapter
 
-::: fscheduler.logging.NoOpAdapter
+::: chronflow.logging.NoOpAdapter
     options:
       show_source: false
       heading_level: 3

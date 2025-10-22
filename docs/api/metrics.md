@@ -4,7 +4,7 @@
 
 ## MetricsCollector
 
-::: fscheduler.metrics.MetricsCollector
+::: chronflow.metrics.MetricsCollector
     options:
       show_root_heading: true
       heading_level: 3

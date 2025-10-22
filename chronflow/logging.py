@@ -41,7 +41,7 @@ class LoggerAdapter(ABC):
 class StructlogAdapter(LoggerAdapter):
     """Structlog 日志适配器(默认)。"""
 
-    def __init__(self, logger_name: str = "fscheduler") -> None:
+    def __init__(self, logger_name: str = "chronflow") -> None:
         """初始化 structlog 适配器。
 
         参数:
@@ -103,7 +103,7 @@ class LoguruAdapter(LoggerAdapter):
 
     示例:
         from loguru import logger
-        from fscheduler.logging import LoguruAdapter
+        from chronflow.logging import LoguruAdapter
 
         scheduler = Scheduler()
         scheduler.set_logger(LoguruAdapter(logger))
@@ -143,7 +143,7 @@ class StdlibAdapter(LoggerAdapter):
 
     示例:
         import logging
-        from fscheduler.logging import StdlibAdapter
+        from chronflow.logging import StdlibAdapter
 
         logger = logging.getLogger("myapp")
         scheduler = Scheduler()
@@ -221,4 +221,4 @@ def get_default_logger() -> LoggerAdapter:
     except Exception:
         import logging
 
-        return StdlibAdapter(logging.getLogger("fscheduler"))
+        return StdlibAdapter(logging.getLogger("chronflow"))

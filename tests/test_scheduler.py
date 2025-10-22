@@ -5,10 +5,10 @@ from datetime import datetime
 
 import pytest
 
-from fscheduler.backends.memory import MemoryBackend
-from fscheduler.config import SchedulerConfig
-from fscheduler.scheduler import Scheduler
-from fscheduler.task import ScheduleType, Task, TaskConfig, TaskStatus
+from chronflow.backends.memory import MemoryBackend
+from chronflow.config import SchedulerConfig
+from chronflow.scheduler import Scheduler
+from chronflow.task import ScheduleType, Task, TaskConfig, TaskStatus
 
 
 class TestScheduler:
@@ -162,7 +162,7 @@ class TestScheduler:
         async def test_task():
             pass
 
-        from fscheduler.logging import NoOpAdapter
+        from chronflow.logging import NoOpAdapter
 
         scheduler = Scheduler(logger=NoOpAdapter())
 
@@ -357,7 +357,7 @@ class TestScheduler:
 
     def test_set_logger(self):
         """测试设置日志适配器。"""
-        from fscheduler.logging import NoOpAdapter
+        from chronflow.logging import NoOpAdapter
 
         scheduler = Scheduler()
         original_logger = scheduler._log
@@ -374,7 +374,7 @@ class TestScheduler:
         config = SchedulerConfig(enable_logging=False)
         scheduler = Scheduler(config=config)
 
-        from fscheduler.logging import NoOpAdapter
+        from chronflow.logging import NoOpAdapter
 
         assert isinstance(scheduler._log, NoOpAdapter)
 
@@ -411,7 +411,7 @@ class TestScheduler:
         async def test_func():
             pass
 
-        from fscheduler.logging import NoOpAdapter
+        from chronflow.logging import NoOpAdapter
 
         scheduler = Scheduler(logger=NoOpAdapter())
 
@@ -439,7 +439,7 @@ class TestScheduler:
         async def test_func():
             pass
 
-        from fscheduler.logging import NoOpAdapter
+        from chronflow.logging import NoOpAdapter
 
         scheduler = Scheduler(logger=NoOpAdapter())
 
@@ -466,7 +466,7 @@ class TestScheduler:
     @pytest.mark.asyncio
     async def test_nonexistent_task_in_queue(self):
         """测试队列中存在不存在的任务。"""
-        from fscheduler.logging import NoOpAdapter
+        from chronflow.logging import NoOpAdapter
 
         scheduler = Scheduler(logger=NoOpAdapter())
 

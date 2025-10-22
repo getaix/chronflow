@@ -5,8 +5,8 @@ from datetime import datetime, timedelta
 
 import pytest
 
-from fscheduler.retry import RetryPolicy
-from fscheduler.task import ScheduleType, Task, TaskConfig, TaskStatus
+from chronflow.retry import RetryPolicy
+from chronflow.task import ScheduleType, Task, TaskConfig, TaskStatus
 
 
 class TestTaskConfig:

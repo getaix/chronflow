@@ -1,11 +1,11 @@
 # 监控与统计
 
-fscheduler 提供了丰富的监控功能，帮助你了解调度器和任务的运行状态。
+chronflow 提供了丰富的监控功能，帮助你了解调度器和任务的运行状态。
 
 ## 获取调度器统计信息
 
 ```python
-from fscheduler import Scheduler
+from chronflow import Scheduler
 
 scheduler = Scheduler()
 
@@ -94,7 +94,7 @@ if task:
 ## 按状态筛选任务
 
 ```python
-from fscheduler import TaskStatus
+from chronflow import TaskStatus
 
 # 获取失败的任务
 failed_tasks = scheduler.get_task_by_status(TaskStatus.FAILED)
@@ -152,7 +152,7 @@ if success:
 
 ```python
 import asyncio
-from fscheduler import Scheduler, interval
+from chronflow import Scheduler, interval
 
 scheduler = Scheduler()
 
@@ -173,7 +173,7 @@ async def monitor_dashboard():
     print(f"  失败: {counts['failed']}")
 
     # 显示失败任务详情
-    from fscheduler import TaskStatus
+    from chronflow import TaskStatus
     failed = scheduler.get_task_by_status(TaskStatus.FAILED)
     if failed:
         print(f"\n失败任务:")
@@ -224,13 +224,13 @@ print(f"连续失败: {metrics.consecutive_failures} 次")
 
 ```python
 from prometheus_client import Gauge, Counter, Histogram
-from fscheduler import Scheduler, interval
+from chronflow import Scheduler, interval
 
 # 定义 Prometheus 指标
-task_total = Counter('fscheduler_task_total', 'Total tasks', ['task_name'])
-task_success = Counter('fscheduler_task_success', 'Successful tasks', ['task_name'])
-task_failure = Counter('fscheduler_task_failure', 'Failed tasks', ['task_name'])
-task_duration = Histogram('fscheduler_task_duration_seconds', 'Task duration', ['task_name'])
+task_total = Counter('chronflow_task_total', 'Total tasks', ['task_name'])
+task_success = Counter('chronflow_task_success', 'Successful tasks', ['task_name'])
+task_failure = Counter('chronflow_task_failure', 'Failed tasks', ['task_name'])
+task_duration = Histogram('chronflow_task_duration_seconds', 'Task duration', ['task_name'])
 
 scheduler = Scheduler()
 
@@ -256,7 +256,7 @@ async def update_metrics():
 基于指标设置告警：
 
 ```python
-from fscheduler import Scheduler, interval, TaskStatus
+from chronflow import Scheduler, interval, TaskStatus
 
 scheduler = Scheduler()
 

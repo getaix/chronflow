@@ -4,7 +4,7 @@
 
 ## RetryPolicy
 
-::: fscheduler.retry.RetryPolicy
+::: chronflow.retry.RetryPolicy
     options:
       show_source: false
       heading_level: 3
@@ -13,7 +13,7 @@
 
 ## RetryStrategy
 
-::: fscheduler.retry.RetryStrategy
+::: chronflow.retry.RetryStrategy
     options:
       show_source: false
       heading_level: 3

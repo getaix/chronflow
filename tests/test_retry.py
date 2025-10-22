@@ -2,7 +2,7 @@
 
 import pytest
 
-from fscheduler.retry import RetryPolicy, RetryStrategy
+from chronflow.retry import RetryPolicy, RetryStrategy
 
 
 class TestRetryPolicy:

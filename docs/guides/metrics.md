@@ -1,6 +1,6 @@
 # 性能监控和指标导出
 
-fscheduler 提供了内置的性能指标收集功能,可以帮助你监控任务执行情况,分析性能瓶颈,并与 Prometheus 等监控系统集成。
+chronflow 提供了内置的性能指标收集功能,可以帮助你监控任务执行情况,分析性能瓶颈,并与 Prometheus 等监控系统集成。
 
 ## 快速开始
 
@@ -9,7 +9,7 @@ fscheduler 提供了内置的性能指标收集功能,可以帮助你监控任�
 在创建调度器时,设置 `enable_metrics=True` 即可启用指标收集:
 
 ```python
-from fscheduler import Scheduler
+from chronflow import Scheduler
 
 # 创建启用指标的调度器
 scheduler = Scheduler(enable_metrics=True)
@@ -63,7 +63,7 @@ for task_name, stats in metrics["task_stats"].items():
 
 ### 导出 Prometheus 格式
 
-fscheduler 支持导出标准的 Prometheus 文本格式:
+chronflow 支持导出标准的 Prometheus 文本格式:
 
 ```python
 # 导出 Prometheus 格式的指标
@@ -74,31 +74,31 @@ print(prometheus_text)
 输出示例:
 
 ```
-# HELP fscheduler_uptime_seconds Uptime in seconds
-# TYPE fscheduler_uptime_seconds gauge
-fscheduler_uptime_seconds 125.5
+# HELP chronflow_uptime_seconds Uptime in seconds
+# TYPE chronflow_uptime_seconds gauge
+chronflow_uptime_seconds 125.5
 
-# HELP fscheduler_executions_total Total task executions
-# TYPE fscheduler_executions_total counter
-fscheduler_executions_total 150
+# HELP chronflow_executions_total Total task executions
+# TYPE chronflow_executions_total counter
+chronflow_executions_total 150
 
-# HELP fscheduler_executions_success Successful executions
-# TYPE fscheduler_executions_success counter
-fscheduler_executions_success 145
+# HELP chronflow_executions_success Successful executions
+# TYPE chronflow_executions_success counter
+chronflow_executions_success 145
 
-# HELP fscheduler_executions_failed Failed executions
-# TYPE fscheduler_executions_failed counter
-fscheduler_executions_failed 5
+# HELP chronflow_executions_failed Failed executions
+# TYPE chronflow_executions_failed counter
+chronflow_executions_failed 5
 
-# HELP fscheduler_task_executions Task executions by name
-# TYPE fscheduler_task_executions counter
-fscheduler_task_executions{task="my_task"} 75
+# HELP chronflow_task_executions Task executions by name
+# TYPE chronflow_task_executions counter
+chronflow_task_executions{task="my_task"} 75
 
-# HELP fscheduler_task_duration_seconds Task duration by name
-# TYPE fscheduler_task_duration_seconds gauge
-fscheduler_task_duration_seconds{task="my_task",stat="avg"} 0.523
-fscheduler_task_duration_seconds{task="my_task",stat="min"} 0.105
-fscheduler_task_duration_seconds{task="my_task",stat="max"} 1.250
+# HELP chronflow_task_duration_seconds Task duration by name
+# TYPE chronflow_task_duration_seconds gauge
+chronflow_task_duration_seconds{task="my_task",stat="avg"} 0.523
+chronflow_task_duration_seconds{task="my_task",stat="min"} 0.105
+chronflow_task_duration_seconds{task="my_task",stat="max"} 1.250
 ```
 
 ### 创建 HTTP 端点
@@ -107,7 +107,7 @@ fscheduler_task_duration_seconds{task="my_task",stat="max"} 1.250
 
 ```python
 from aiohttp import web
-from fscheduler import Scheduler
+from chronflow import Scheduler
 
 scheduler = Scheduler(enable_metrics=True)
 
@@ -136,7 +136,7 @@ print("Prometheus 端点: http://localhost:9090/metrics")
 
 ```yaml
 scrape_configs:
-  - job_name: 'fscheduler'
+  - job_name: 'chronflow'
     scrape_interval: 15s
     static_configs:
       - targets: ['localhost:9090']
@@ -186,8 +186,8 @@ else:
 
 ```python
 import asyncio
-from fscheduler import Scheduler
-from fscheduler.decorators import interval
+from chronflow import Scheduler
+from chronflow.decorators import interval
 
 async def main():
     # 创建启用指标的调度器
@@ -207,8 +207,8 @@ async def main():
         return "synced"
 
     # 注册任务
-    scheduler.register_task(health_check.__fscheduler_task__)
-    scheduler.register_task(data_sync.__fscheduler_task__)
+    scheduler.register_task(health_check.__chronflow_task__)
+    scheduler.register_task(data_sync.__chronflow_task__)
 
     # 运行调度器
     async with scheduler.run_context():
@@ -246,13 +246,13 @@ async def send_to_statsd(scheduler):
     metrics = scheduler.get_metrics()
 
     # 发送计数器
-    await client.counter("fscheduler.executions.total", metrics["total_executions"])
-    await client.counter("fscheduler.executions.success", metrics["successful_executions"])
-    await client.counter("fscheduler.executions.failed", metrics["failed_executions"])
+    await client.counter("chronflow.executions.total", metrics["total_executions"])
+    await client.counter("chronflow.executions.success", metrics["successful_executions"])
+    await client.counter("chronflow.executions.failed", metrics["failed_executions"])
 
     # 发送 gauge
-    await client.gauge("fscheduler.duration.avg", metrics["average_duration"])
-    await client.gauge("fscheduler.success_rate", metrics["success_rate"] * 100)
+    await client.gauge("chronflow.duration.avg", metrics["average_duration"])
+    await client.gauge("chronflow.success_rate", metrics["success_rate"] * 100)
 
     await client.close()
 ```
@@ -278,9 +278,9 @@ class CustomMetricsExporter:
         """导出 InfluxDB 行协议格式。"""
         metrics = self.scheduler.get_metrics()
         lines = [
-            f"fscheduler,host=localhost executions={metrics['total_executions']}",
-            f"fscheduler,host=localhost success_rate={metrics['success_rate']}",
-            f"fscheduler,host=localhost avg_duration={metrics['average_duration']}",
+            f"chronflow,host=localhost executions={metrics['total_executions']}",
+            f"chronflow,host=localhost success_rate={metrics['success_rate']}",
+            f"chronflow,host=localhost avg_duration={metrics['average_duration']}",
         ]
         return "\n".join(lines)
 

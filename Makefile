@@ -1,7 +1,7 @@
 .PHONY: help install dev-install test coverage lint format type-check clean build setup
 
 help:
-	@echo "fscheduler - 开发命令"
+	@echo "chronflow - 开发命令"
 	@echo ""
 	@echo "setup          - 初始化开发环境(使用 uv)"
 	@echo "install        - 安装基础依赖"
@@ -33,18 +33,18 @@ test:
 	pytest tests/ -v
 
 coverage:
-	pytest tests/ -v --cov=fscheduler --cov-report=html --cov-report=term
+	pytest tests/ -v --cov=chronflow --cov-report=html --cov-report=term
 	@echo "覆盖率报告已生成到 htmlcov/index.html"
 
 lint:
-	ruff check fscheduler/ tests/
+	ruff check chronflow/ tests/
 
 format:
-	ruff check --fix fscheduler/ tests/
-	black fscheduler/ tests/
+	ruff check --fix chronflow/ tests/
+	black chronflow/ tests/
 
 type-check:
-	mypy fscheduler/
+	mypy chronflow/
 
 clean:
 	rm -rf build/

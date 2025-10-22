@@ -1,6 +1,6 @@
 # Scheduler API
 
-::: fscheduler.scheduler.Scheduler
+::: chronflow.scheduler.Scheduler
     options:
       show_source: false
       heading_level: 2

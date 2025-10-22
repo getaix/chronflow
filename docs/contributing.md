@@ -1,6 +1,6 @@
 # 贡献指南
 
-感谢你对 fscheduler 的兴趣！本指南将帮助你了解如何为项目做出贡献。
+感谢你对 chronflow 的兴趣！本指南将帮助你了解如何为项目做出贡献。
 
 ## 开发环境设置
 
@@ -9,11 +9,11 @@
 ```bash
 # Fork 项目到你的 GitHub 账号
 # 然后 clone 到本地
-git clone https://github.com/your-username/fscheduler.git
-cd fscheduler
+git clone https://github.com/your-username/chronflow.git
+cd chronflow
 
 # 添加上游仓库
-git remote add upstream https://github.com/getaix/fscheduler.git
+git remote add upstream https://github.com/getaix/chronflow.git
 ```
 
 ### 2. 安装 uv
@@ -64,7 +64,7 @@ git checkout -b fix/your-bug-fix
 uv run pytest
 
 # 运行测试并生成覆盖率报告
-uv run pytest --cov=fscheduler --cov-report=html
+uv run pytest --cov=chronflow --cov-report=html
 
 # 查看覆盖率报告
 open htmlcov/index.html
@@ -74,17 +74,17 @@ open htmlcov/index.html
 
 ```bash
 # Ruff 检查
-uv run ruff check fscheduler/
+uv run ruff check chronflow/
 
 # Ruff 格式化检查
-uv run ruff format --check fscheduler/
+uv run ruff format --check chronflow/
 
 # 自动修复
-uv run ruff check --fix fscheduler/
-uv run ruff format fscheduler/
+uv run ruff check --fix chronflow/
+uv run ruff format chronflow/
 
 # 类型检查
-uv run mypy fscheduler/
+uv run mypy chronflow/
 ```
 
 ### 5. 提交代码
@@ -168,7 +168,7 @@ def my_function(param1: str, param2: int) -> bool:
 
 ```python
 import pytest
-from fscheduler import Scheduler
+from chronflow import Scheduler
 
 class TestScheduler:
     """调度器测试类。"""
@@ -276,7 +276,7 @@ twine upload dist/*
 4. **实际行为** - 实际发生了什么
 5. **环境信息**:
    - Python 版本
-   - fscheduler 版本
+   - chronflow 版本
    - 操作系统
 6. **相关日志** - 错误信息、堆栈跟踪等
 
@@ -299,13 +299,13 @@ twine upload dist/*
 
 如果你有任何问题：
 
-1. 查看 [文档](https://getaix.github.io/fscheduler)
-2. 搜索现有的 [Issues](https://github.com/getaix/fscheduler/issues)
+1. 查看 [文档](https://getaix.github.io/chronflow)
+2. 搜索现有的 [Issues](https://github.com/getaix/chronflow/issues)
 3. 创建新的 Issue 提问
 
 ## 致谢
 
-感谢所有为 fscheduler 做出贡献的开发者！你们的贡献让这个项目变得更好。
+感谢所有为 chronflow 做出贡献的开发者！你们的贡献让这个项目变得更好。
 
 ---
 

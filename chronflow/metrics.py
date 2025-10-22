@@ -129,29 +129,29 @@ class MetricsCollector:
         """
         stats = self.get_stats()
         lines = [
-            "# HELP fscheduler_uptime_seconds Uptime in seconds",
-            "# TYPE fscheduler_uptime_seconds gauge",
-            f"fscheduler_uptime_seconds {stats['uptime_seconds']}",
+            "# HELP chronflow_uptime_seconds Uptime in seconds",
+            "# TYPE chronflow_uptime_seconds gauge",
+            f"chronflow_uptime_seconds {stats['uptime_seconds']}",
             "",
-            "# HELP fscheduler_executions_total Total task executions",
-            "# TYPE fscheduler_executions_total counter",
-            f"fscheduler_executions_total {stats['total_executions']}",
+            "# HELP chronflow_executions_total Total task executions",
+            "# TYPE chronflow_executions_total counter",
+            f"chronflow_executions_total {stats['total_executions']}",
             "",
-            "# HELP fscheduler_executions_success Successful executions",
-            "# TYPE fscheduler_executions_success counter",
-            f"fscheduler_executions_success {stats['successful_executions']}",
+            "# HELP chronflow_executions_success Successful executions",
+            "# TYPE chronflow_executions_success counter",
+            f"chronflow_executions_success {stats['successful_executions']}",
             "",
-            "# HELP fscheduler_executions_failed Failed executions",
-            "# TYPE fscheduler_executions_failed counter",
-            f"fscheduler_executions_failed {stats['failed_executions']}",
+            "# HELP chronflow_executions_failed Failed executions",
+            "# TYPE chronflow_executions_failed counter",
+            f"chronflow_executions_failed {stats['failed_executions']}",
             "",
-            "# HELP fscheduler_duration_seconds_total Total execution duration",
-            "# TYPE fscheduler_duration_seconds_total counter",
-            f"fscheduler_duration_seconds_total {stats['total_duration']}",
+            "# HELP chronflow_duration_seconds_total Total execution duration",
+            "# TYPE chronflow_duration_seconds_total counter",
+            f"chronflow_duration_seconds_total {stats['total_duration']}",
             "",
-            "# HELP fscheduler_duration_seconds_average Average execution duration",
-            "# TYPE fscheduler_duration_seconds_average gauge",
-            f"fscheduler_duration_seconds_average {stats['average_duration']}",
+            "# HELP chronflow_duration_seconds_average Average execution duration",
+            "# TYPE chronflow_duration_seconds_average gauge",
+            f"chronflow_duration_seconds_average {stats['average_duration']}",
             "",
         ]
 
@@ -159,17 +159,17 @@ class MetricsCollector:
         for task_name, task_stats in stats["task_stats"].items():
             lines.extend(
                 [
-                    "# HELP fscheduler_task_executions Task executions by name",
-                    "# TYPE fscheduler_task_executions counter",
-                    f'fscheduler_task_executions{{task="{task_name}"}} {task_stats["executions"]}',
+                    "# HELP chronflow_task_executions Task executions by name",
+                    "# TYPE chronflow_task_executions counter",
+                    f'chronflow_task_executions{{task="{task_name}"}} {task_stats["executions"]}',
                     "",
-                    "# HELP fscheduler_task_duration_seconds Task duration by name",
-                    "# TYPE fscheduler_task_duration_seconds gauge",
-                    f'fscheduler_task_duration_seconds{{task="{task_name}",stat="avg"}}'
+                    "# HELP chronflow_task_duration_seconds Task duration by name",
+                    "# TYPE chronflow_task_duration_seconds gauge",
+                    f'chronflow_task_duration_seconds{{task="{task_name}",stat="avg"}}'
                     f' {task_stats["average_duration"]}',
-                    f'fscheduler_task_duration_seconds{{task="{task_name}",stat="min"}}'
+                    f'chronflow_task_duration_seconds{{task="{task_name}",stat="min"}}'
                     f' {task_stats["min_duration"]}',
-                    f'fscheduler_task_duration_seconds{{task="{task_name}",stat="max"}}'
+                    f'chronflow_task_duration_seconds{{task="{task_name}",stat="max"}}'
                     f' {task_stats["max_duration"]}',
                     "",
                 ]

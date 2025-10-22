@@ -1,4 +1,4 @@
-# fscheduler
+# chronflow
 
 [![Python Version](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
@@ -23,29 +23,29 @@
 ### 基础安装(仅内存/SQLite后端)
 
 ```bash
-pip install getaix-chronflow
+pip install chronflow
 ```
 
 ### 安装 Redis 支持
 
 ```bash
-pip install getaix-chronflow[redis]
+pip install chronflow[redis]
 # 或
-pip install getaix-chronflow redis
+pip install chronflow redis
 ```
 
 ### 安装 RabbitMQ 支持
 
 ```bash
-pip install getaix-chronflow[rabbitmq]
+pip install chronflow[rabbitmq]
 # 或
-pip install getaix-chronflow aio-pika
+pip install chronflow aio-pika
 ```
 
 ### 完整安装
 
 ```bash
-pip install getaix-chronflow[all]
+pip install chronflow[all]
 ```
 
 ## 快速开始
@@ -54,7 +54,7 @@ pip install getaix-chronflow[all]
 
 ```python
 import asyncio
-from fscheduler import Scheduler, cron, interval
+from chronflow import Scheduler, cron, interval
 
 # 创建调度器
 scheduler = Scheduler()
@@ -79,8 +79,8 @@ if __name__ == "__main__":
 ### 使用 Redis 后端
 
 ```python
-from fscheduler import Scheduler, SchedulerConfig, cron
-from fscheduler.backends import RedisBackend
+from chronflow import Scheduler, SchedulerConfig, cron
+from chronflow.backends import RedisBackend
 
 # 配置 Redis 后端
 backend = RedisBackend(url="redis://localhost:6379/0")
@@ -102,8 +102,8 @@ asyncio.run(main())
 ### 使用 SQLite 本地持久化
 
 ```python
-from fscheduler import Scheduler, interval
-from fscheduler.backends import SQLiteBackend
+from chronflow import Scheduler, interval
+from chronflow.backends import SQLiteBackend
 
 # SQLite 后端,任务持久化到本地文件
 backend = SQLiteBackend(db_path="scheduler.db")
@@ -121,7 +121,7 @@ asyncio.run(scheduler.start())
 
 ```python
 from datetime import datetime, timedelta
-from fscheduler import Scheduler, scheduled, RetryPolicy
+from chronflow import Scheduler, scheduled, RetryPolicy
 
 scheduler = Scheduler()
 
@@ -143,7 +143,7 @@ async def important_task():
     await process_critical_data()
 
 # 一次性任务
-from fscheduler.decorators import once
+from chronflow.decorators import once
 
 @once(at=datetime(2025, 12, 31, 23, 59, 59))
 async def new_year_celebration():
@@ -168,7 +168,7 @@ persistence_path = "scheduler_state.json"
 **Python 代码:**
 
 ```python
-from fscheduler import Scheduler, SchedulerConfig
+from chronflow import Scheduler, SchedulerConfig
 
 # 从配置文件加载
 config = SchedulerConfig.from_file("config.toml")
@@ -186,7 +186,7 @@ scheduler = Scheduler(config=config)
 
 ## Cron 表达式
 
-fscheduler 支持标准 Cron 表达式,并扩展支持秒级精度:
+chronflow 支持标准 Cron 表达式,并扩展支持秒级精度:
 
 ```
 秒 分 时 日 月 周
@@ -253,7 +253,7 @@ print(task.metrics)
                  └─── 指标收集
 ```
 
-## 为什么选择 fscheduler?
+## 为什么选择 chronflow?
 
 ### vs Celery
 
@@ -273,21 +273,21 @@ print(task.metrics)
 
 ```bash
 # 克隆仓库
-git clone https://github.com/getaix/fscheduler.git
-cd fscheduler
+git clone https://github.com/getaix/chronflow.git
+cd chronflow
 
 # 安装开发依赖
 pip install -e ".[dev]"
 
 # 运行测试
-pytest tests/ -v --cov=fscheduler --cov-report=html
+pytest tests/ -v --cov=chronflow --cov-report=html
 
 # 代码检查
-ruff check fscheduler/
-mypy fscheduler/
+ruff check chronflow/
+mypy chronflow/
 
 # 格式化代码
-black fscheduler/
+black chronflow/
 ```
 
 ## 许可证
@@ -300,6 +300,6 @@ MIT License - 详见 [LICENSE](LICENSE) 文件
 
 ## 链接
 
-- 📖 [完整文档](https://getaix.github.io/fscheduler)
-- 🐛 [问题反馈](https://github.com/getaix/fscheduler/issues)
-- 📦 [PyPI](https://pypi.org/project/fscheduler/)
+- 📖 [完整文档](https://getaix.github.io/chronflow)
+- 🐛 [问题反馈](https://github.com/getaix/chronflow/issues)
+- 📦 [PyPI](https://pypi.org/project/chronflow/)

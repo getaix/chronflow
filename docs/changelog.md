@@ -1,6 +1,6 @@
 # 更新日志
 
-本文档记录 fscheduler 的所有重要变更。
+本文档记录 chronflow 的所有重要变更。
 
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/),
 版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
@@ -98,7 +98,7 @@ LoggerAdapter (抽象基类)
 
 ### [0.1.0] - 首个 Beta 版本
 
-这是 fscheduler 的首个公开 Beta 版本,包含以下核心功能:
+这是 chronflow 的首个公开 Beta 版本,包含以下核心功能:
 
 **核心特性:**
 - 高性能异步调度器
@@ -150,7 +150,7 @@ LoggerAdapter (抽象基类)
 
 ## 贡献
 
-发现 Bug 或有新功能建议?欢迎[提交 Issue](https://github.com/yourusername/fscheduler/issues)!
+发现 Bug 或有新功能建议?欢迎[提交 Issue](https://github.com/yourusername/chronflow/issues)!
 
 ## 许可证
 

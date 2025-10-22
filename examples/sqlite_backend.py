@@ -9,8 +9,8 @@
 
 import asyncio
 
-from fscheduler import Scheduler, SchedulerConfig, interval
-from fscheduler.backends import SQLiteBackend
+from chronflow import Scheduler, SchedulerConfig, interval
+from chronflow.backends import SQLiteBackend
 
 # 创建 SQLite 后端
 sqlite_backend = SQLiteBackend(

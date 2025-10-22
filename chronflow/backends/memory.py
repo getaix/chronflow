@@ -7,7 +7,7 @@ import heapq
 from datetime import datetime
 from typing import Any
 
-from fscheduler.backends.base import QueueBackend
+from chronflow.backends.base import QueueBackend
 
 
 class MemoryBackend(QueueBackend):

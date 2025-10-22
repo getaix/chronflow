@@ -6,7 +6,7 @@
 
 ### scheduled
 
-::: fscheduler.decorators.scheduled
+::: chronflow.decorators.scheduled
     options:
       show_source: false
       heading_level: 4
@@ -14,7 +14,7 @@
 
 ### cron
 
-::: fscheduler.decorators.cron
+::: chronflow.decorators.cron
     options:
       show_source: false
       heading_level: 4
@@ -22,7 +22,7 @@
 
 ### interval
 
-::: fscheduler.decorators.interval
+::: chronflow.decorators.interval
     options:
       show_source: false
       heading_level: 4
@@ -30,7 +30,7 @@
 
 ### once
 
-::: fscheduler.decorators.once
+::: chronflow.decorators.once
     options:
       show_source: false
       heading_level: 4
@@ -40,7 +40,7 @@
 
 ### every
 
-::: fscheduler.decorators.every
+::: chronflow.decorators.every
     options:
       show_source: false
       heading_level: 4
@@ -48,7 +48,7 @@
 
 ### hourly
 
-::: fscheduler.decorators.hourly
+::: chronflow.decorators.hourly
     options:
       show_source: false
       heading_level: 4
@@ -56,7 +56,7 @@
 
 ### daily
 
-::: fscheduler.decorators.daily
+::: chronflow.decorators.daily
     options:
       show_source: false
       heading_level: 4
@@ -64,7 +64,7 @@
 
 ### weekly
 
-::: fscheduler.decorators.weekly
+::: chronflow.decorators.weekly
     options:
       show_source: false
       heading_level: 4
@@ -72,7 +72,7 @@
 
 ### monthly
 
-::: fscheduler.decorators.monthly
+::: chronflow.decorators.monthly
     options:
       show_source: false
       heading_level: 4

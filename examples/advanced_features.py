@@ -2,7 +2,7 @@
 
 import asyncio
 
-from fscheduler import Scheduler, daily, every, hourly, weekly
+from chronflow import Scheduler, daily, every, hourly, weekly
 
 # 创建调度器
 scheduler = Scheduler()

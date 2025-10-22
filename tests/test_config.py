@@ -6,7 +6,7 @@ from pathlib import Path
 
 import pytest
 
-from fscheduler.config import SchedulerConfig, TaskMetrics
+from chronflow.config import SchedulerConfig, TaskMetrics
 
 
 class TestSchedulerConfig:

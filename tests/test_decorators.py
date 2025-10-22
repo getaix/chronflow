@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 
 import pytest
 
-from fscheduler.decorators import (
+from chronflow.decorators import (
     cron,
     daily,
     every,
@@ -15,8 +15,8 @@ from fscheduler.decorators import (
     scheduled,
     weekly,
 )
-from fscheduler.retry import RetryPolicy
-from fscheduler.task import ScheduleType
+from chronflow.retry import RetryPolicy
+from chronflow.task import ScheduleType
 
 
 class TestScheduledDecorator:
@@ -29,8 +29,8 @@ class TestScheduledDecorator:
         async def test_func():
             return "success"
 
-        assert hasattr(test_func, "__fscheduler_task__")
-        task = test_func.__fscheduler_task__
+        assert hasattr(test_func, "__chronflow_task__")
+        task = test_func.__chronflow_task__
 
         assert task.config.name == "test_func"
         assert task.config.schedule_type == ScheduleType.CRON
@@ -43,7 +43,7 @@ class TestScheduledDecorator:
         async def test_func():
             return "success"
 
-        task = test_func.__fscheduler_task__
+        task = test_func.__chronflow_task__
 
         assert task.config.schedule_type == ScheduleType.INTERVAL
         assert task.config.interval_seconds == 30.0
@@ -55,7 +55,7 @@ class TestScheduledDecorator:
         async def test_func():
             return "success"
 
-        task = test_func.__fscheduler_task__
+        task = test_func.__chronflow_task__
 
         assert task.config.schedule_type == ScheduleType.INTERVAL
         assert task.config.interval_seconds == 300.0
@@ -68,7 +68,7 @@ class TestScheduledDecorator:
         async def test_func():
             return "success"
 
-        task = test_func.__fscheduler_task__
+        task = test_func.__chronflow_task__
 
         assert task.config.schedule_type == ScheduleType.ONCE
         assert task.config.start_time == start
@@ -80,7 +80,7 @@ class TestScheduledDecorator:
         async def test_func():
             return "success"
 
-        task = test_func.__fscheduler_task__
+        task = test_func.__chronflow_task__
 
         assert task.config.name == "custom_task_name"
 
@@ -92,7 +92,7 @@ class TestScheduledDecorator:
         async def test_func():
             return "success"
 
-        task = test_func.__fscheduler_task__
+        task = test_func.__chronflow_task__
 
         assert task.config.retry_policy.max_attempts == 5
 
@@ -103,7 +103,7 @@ class TestScheduledDecorator:
         async def test_func():
             return "success"
 
-        task = test_func.__fscheduler_task__
+        task = test_func.__chronflow_task__
 
         assert task.config.timeout == 30.0
 
@@ -114,7 +114,7 @@ class TestScheduledDecorator:
         async def test_func():
             return "success"
 
-        task = test_func.__fscheduler_task__
+        task = test_func.__chronflow_task__
 
         assert task.config.max_instances == 5
 
@@ -125,7 +125,7 @@ class TestScheduledDecorator:
         async def test_func():
             return "success"
 
-        task = test_func.__fscheduler_task__
+        task = test_func.__chronflow_task__
 
         assert "important" in task.config.tags
         assert "daily" in task.config.tags
@@ -137,7 +137,7 @@ class TestScheduledDecorator:
         async def test_func():
             return "success"
 
-        task = test_func.__fscheduler_task__
+        task = test_func.__chronflow_task__
 
         assert task.config.metadata["author"] == "test"
         assert task.config.metadata["version"] == "1.0"
@@ -168,7 +168,7 @@ class TestCronDecorator:
         async def test_func():
             pass
 
-        task = test_func.__fscheduler_task__
+        task = test_func.__chronflow_task__
 
         assert task.config.schedule_type == ScheduleType.CRON
         assert task.config.cron_expression == "0 0 * * * *"
@@ -180,7 +180,7 @@ class TestCronDecorator:
         async def test_func():
             pass
 
-        task = test_func.__fscheduler_task__
+        task = test_func.__chronflow_task__
 
         assert task.config.name == "my_cron_task"
 
@@ -191,7 +191,7 @@ class TestCronDecorator:
         async def test_func():
             pass
 
-        task = test_func.__fscheduler_task__
+        task = test_func.__chronflow_task__
 
         assert task.config.retry_policy.max_attempts == 10
 
@@ -206,7 +206,7 @@ class TestIntervalDecorator:
         async def test_func():
             pass
 
-        task = test_func.__fscheduler_task__
+        task = test_func.__chronflow_task__
 
         assert task.config.schedule_type == ScheduleType.INTERVAL
         assert task.config.interval_seconds == 30.0
@@ -218,7 +218,7 @@ class TestIntervalDecorator:
         async def test_func():
             pass
 
-        task = test_func.__fscheduler_task__
+        task = test_func.__chronflow_task__
 
         assert task.config.interval_seconds == 7200.0
 
@@ -229,7 +229,7 @@ class TestIntervalDecorator:
         async def test_func():
             pass
 
-        task = test_func.__fscheduler_task__
+        task = test_func.__chronflow_task__
 
         assert task.config.name == "minute_task"
 
@@ -245,7 +245,7 @@ class TestOnceDecorator:
         async def test_func():
             pass
 
-        task = test_func.__fscheduler_task__
+        task = test_func.__chronflow_task__
 
         assert task.config.schedule_type == ScheduleType.ONCE
         assert task.config.start_time == future_time
@@ -258,7 +258,7 @@ class TestOnceDecorator:
         async def test_func():
             pass
 
-        task = test_func.__fscheduler_task__
+        task = test_func.__chronflow_task__
 
         assert task.config.name == "one_time_task"
 
@@ -273,7 +273,7 @@ class TestEveryDecorator:
         async def test_func():
             pass
 
-        task = test_func.__fscheduler_task__
+        task = test_func.__chronflow_task__
         assert task.config.schedule_type == ScheduleType.INTERVAL
         assert task.config.interval_seconds == 30.0
 
@@ -284,7 +284,7 @@ class TestEveryDecorator:
         async def test_func():
             pass
 
-        task = test_func.__fscheduler_task__
+        task = test_func.__chronflow_task__
         assert task.config.interval_seconds == 300.0  # 5 * 60
 
     def test_every_hours(self):
@@ -294,7 +294,7 @@ class TestEveryDecorator:
         async def test_func():
             pass
 
-        task = test_func.__fscheduler_task__
+        task = test_func.__chronflow_task__
         assert task.config.interval_seconds == 7200.0  # 2 * 3600
 
     def test_every_days(self):
@@ -304,7 +304,7 @@ class TestEveryDecorator:
         async def test_func():
             pass
 
-        task = test_func.__fscheduler_task__
+        task = test_func.__chronflow_task__
         assert task.config.interval_seconds == 86400.0  # 1 * 86400
 
     def test_every_combined(self):
@@ -314,7 +314,7 @@ class TestEveryDecorator:
         async def test_func():
             pass
 
-        task = test_func.__fscheduler_task__
+        task = test_func.__chronflow_task__
         expected = 1 * 3600 + 30 * 60 + 45
         assert task.config.interval_seconds == expected
 
@@ -329,7 +329,7 @@ class TestHourlyDecorator:
         async def test_func():
             pass
 
-        task = test_func.__fscheduler_task__
+        task = test_func.__chronflow_task__
         assert task.config.schedule_type == ScheduleType.CRON
         assert task.config.cron_expression == "0 0 * * * *"
 
@@ -340,7 +340,7 @@ class TestHourlyDecorator:
         async def test_func():
             pass
 
-        task = test_func.__fscheduler_task__
+        task = test_func.__chronflow_task__
         assert task.config.cron_expression == "0 30 * * * *"
 
     def test_hourly_with_all_params(self):
@@ -350,7 +350,7 @@ class TestHourlyDecorator:
         async def test_func():
             pass
 
-        task = test_func.__fscheduler_task__
+        task = test_func.__chronflow_task__
         assert task.config.cron_expression == "0 15 * * * *"
 
 
@@ -364,7 +364,7 @@ class TestDailyDecorator:
         async def test_func():
             pass
 
-        task = test_func.__fscheduler_task__
+        task = test_func.__chronflow_task__
         assert task.config.schedule_type == ScheduleType.CRON
         assert task.config.cron_expression == "0 0 0 * * *"
 
@@ -375,7 +375,7 @@ class TestDailyDecorator:
         async def test_func():
             pass
 
-        task = test_func.__fscheduler_task__
+        task = test_func.__chronflow_task__
         assert task.config.cron_expression == "0 0 9 * * *"
 
     def test_daily_with_hour_minute(self):
@@ -385,7 +385,7 @@ class TestDailyDecorator:
         async def test_func():
             pass
 
-        task = test_func.__fscheduler_task__
+        task = test_func.__chronflow_task__
         assert task.config.cron_expression == "0 30 9 * * *"
 
     def test_daily_with_multiple_params(self):
@@ -395,7 +395,7 @@ class TestDailyDecorator:
         async def test_func():
             pass
 
-        task = test_func.__fscheduler_task__
+        task = test_func.__chronflow_task__
         assert task.config.cron_expression == "0 30 14 * * *"
 
 
@@ -409,7 +409,7 @@ class TestWeeklyDecorator:
         async def test_func():
             pass
 
-        task = test_func.__fscheduler_task__
+        task = test_func.__chronflow_task__
         assert task.config.schedule_type == ScheduleType.CRON
         assert task.config.cron_expression == "0 0 0 * * 0"
 
@@ -420,7 +420,7 @@ class TestWeeklyDecorator:
         async def test_func():
             pass
 
-        task = test_func.__fscheduler_task__
+        task = test_func.__chronflow_task__
         assert task.config.cron_expression == "0 0 0 * * 5"
 
     def test_weekly_with_time(self):
@@ -430,7 +430,7 @@ class TestWeeklyDecorator:
         async def test_func():
             pass
 
-        task = test_func.__fscheduler_task__
+        task = test_func.__chronflow_task__
         assert task.config.cron_expression == "0 30 10 * * 3"
 
 
@@ -444,7 +444,7 @@ class TestMonthlyDecorator:
         async def test_func():
             pass
 
-        task = test_func.__fscheduler_task__
+        task = test_func.__chronflow_task__
         assert task.config.schedule_type == ScheduleType.CRON
         assert task.config.cron_expression == "0 0 0 1 * *"
 
@@ -455,7 +455,7 @@ class TestMonthlyDecorator:
         async def test_func():
             pass
 
-        task = test_func.__fscheduler_task__
+        task = test_func.__chronflow_task__
         assert task.config.cron_expression == "0 0 0 15 * *"
 
     def test_monthly_with_time(self):
@@ -465,5 +465,5 @@ class TestMonthlyDecorator:
         async def test_func():
             pass
 
-        task = test_func.__fscheduler_task__
+        task = test_func.__chronflow_task__
         assert task.config.cron_expression == "0 30 9 1 * *"

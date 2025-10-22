@@ -9,12 +9,12 @@ from contextlib import asynccontextmanager
 from datetime import datetime
 from typing import Any
 
-from fscheduler.backends.base import QueueBackend
-from fscheduler.backends.memory import MemoryBackend
-from fscheduler.config import SchedulerConfig
-from fscheduler.logging import LoggerAdapter, get_default_logger
-from fscheduler.metrics import MetricsCollector
-from fscheduler.task import Task, TaskStatus
+from chronflow.backends.base import QueueBackend
+from chronflow.backends.memory import MemoryBackend
+from chronflow.config import SchedulerConfig
+from chronflow.logging import LoggerAdapter, get_default_logger
+from chronflow.metrics import MetricsCollector
+from chronflow.task import Task, TaskStatus
 
 
 class Scheduler:
@@ -59,7 +59,7 @@ class Scheduler:
         elif self.config.enable_logging:
             self._log = get_default_logger()
         else:
-            from fscheduler.logging import NoOpAdapter
+            from chronflow.logging import NoOpAdapter
 
             self._log = NoOpAdapter()
 
@@ -74,7 +74,7 @@ class Scheduler:
 
         示例:
             from loguru import logger
-            from fscheduler.logging import LoguruAdapter
+            from chronflow.logging import LoguruAdapter
 
             scheduler.set_logger(LoguruAdapter(logger))
         """

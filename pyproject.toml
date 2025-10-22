@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "getaix-chronflow"
+name = "chronflow"
 version = "0.1.0"
 description = "A high-performance async task scheduler with cron support, retry mechanism, and configuration management"
 authors = [
@@ -76,14 +76,14 @@ all = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/getaix/fscheduler"
-Documentation = "https://getaix.github.io/fscheduler"
-Repository = "https://github.com/getaix/fscheduler"
-Issues = "https://github.com/getaix/fscheduler/issues"
-Changelog = "https://getaix.github.io/fscheduler/changelog/"
+Homepage = "https://github.com/getaix/chronflow"
+Documentation = "https://getaix.github.io/chronflow"
+Repository = "https://github.com/getaix/chronflow"
+Issues = "https://github.com/getaix/chronflow/issues"
+Changelog = "https://getaix.github.io/chronflow/changelog/"
 
 [tool.hatch.build.targets.wheel]
-packages = ["fscheduler"]
+packages = ["chronflow"]
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"

@@ -2,7 +2,7 @@
 
 ## SchedulerConfig
 
-::: fscheduler.config.SchedulerConfig
+::: chronflow.config.SchedulerConfig
     options:
       show_source: false
       heading_level: 3
@@ -11,7 +11,7 @@
 
 ## TaskMetrics
 
-::: fscheduler.config.TaskMetrics
+::: chronflow.config.TaskMetrics
     options:
       show_source: false
       heading_level: 3

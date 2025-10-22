@@ -1,5 +1,5 @@
 """
-fscheduler - 高性能异步任务调度库,专为 Python 3.11+ 设计
+chronflow - 高性能异步任务调度库,专为 Python 3.11+ 设计
 
 特性:
 - 基于 asyncio 的异步/等待支持
@@ -13,8 +13,8 @@ fscheduler - 高性能异步任务调度库,专为 Python 3.11+ 设计
 - 丰富的监控和任务管理功能
 """
 
-from fscheduler.config import SchedulerConfig
-from fscheduler.decorators import (
+from chronflow.config import SchedulerConfig
+from chronflow.decorators import (
     cron,
     daily,
     every,
@@ -25,17 +25,17 @@ from fscheduler.decorators import (
     scheduled,
     weekly,
 )
-from fscheduler.logging import (
+from chronflow.logging import (
     LoggerAdapter,
     LoguruAdapter,
     NoOpAdapter,
     StdlibAdapter,
     StructlogAdapter,
 )
-from fscheduler.metrics import MetricsCollector
-from fscheduler.retry import RetryPolicy
-from fscheduler.scheduler import Scheduler
-from fscheduler.task import Task, TaskConfig, TaskStatus
+from chronflow.metrics import MetricsCollector
+from chronflow.retry import RetryPolicy
+from chronflow.scheduler import Scheduler
+from chronflow.task import Task, TaskConfig, TaskStatus
 
 __version__ = "0.1.0"
 __all__ = [

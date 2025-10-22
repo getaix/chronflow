@@ -1,19 +1,19 @@
 # 贡献指南
 
-感谢你对 fscheduler 的兴趣！
+感谢你对 chronflow 的兴趣！
 
 ## 📚 完整贡献指南
 
 请查看我们的详细贡献指南：**[docs/contributing.md](docs/contributing.md)**
 
-或在线查看：https://getaix.github.io/fscheduler/contributing/
+或在线查看：https://getaix.github.io/chronflow/contributing/
 
 ## 🚀 快速开始
 
 ```bash
 # 1. Fork 并 clone 仓库
-git clone https://github.com/your-username/fscheduler.git
-cd fscheduler
+git clone https://github.com/your-username/chronflow.git
+cd chronflow
 
 # 2. 安装 uv
 curl -LsSf https://astral.sh/uv/install.sh | sh
@@ -25,7 +25,7 @@ uv sync --all-groups --extra all
 uv run pytest
 
 # 5. 代码检查
-uv run ruff check fscheduler/
+uv run ruff check chronflow/
 ```
 
 ## 📝 提交规范
@@ -39,9 +39,9 @@ uv run ruff check fscheduler/
 
 ## 🔗 相关链接
 
-- [问题反馈](https://github.com/getaix/fscheduler/issues)
-- [Pull Requests](https://github.com/getaix/fscheduler/pulls)
-- [完整文档](https://getaix.github.io/fscheduler)
+- [问题反馈](https://github.com/getaix/chronflow/issues)
+- [Pull Requests](https://github.com/getaix/chronflow/pulls)
+- [完整文档](https://getaix.github.io/chronflow)
 
 ---
 

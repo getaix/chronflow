@@ -16,10 +16,10 @@ class TestRedisBackendMocked:
     """Redis 后端 mock 测试类。"""
 
     @pytest.mark.asyncio
-    @patch("fscheduler.backends.redis_backend.Redis")
+    @patch("chronflow.backends.redis_backend.Redis")
     async def test_connect(self, mock_redis_class):
         """测试连接 Redis。"""
-        from fscheduler.backends.redis_backend import RedisBackend
+        from chronflow.backends.redis_backend import RedisBackend
 
         # 创建 mock Redis 实例
         mock_redis = AsyncMock()
@@ -35,10 +35,10 @@ class TestRedisBackendMocked:
         mock_redis.ping.assert_called_once()
 
     @pytest.mark.asyncio
-    @patch("fscheduler.backends.redis_backend.Redis")
+    @patch("chronflow.backends.redis_backend.Redis")
     async def test_disconnect(self, mock_redis_class):
         """测试断开 Redis 连接。"""
-        from fscheduler.backends.redis_backend import RedisBackend
+        from chronflow.backends.redis_backend import RedisBackend
 
         mock_redis = AsyncMock()
         mock_redis.ping = AsyncMock()
@@ -54,10 +54,10 @@ class TestRedisBackendMocked:
         assert backend._redis is None
 
     @pytest.mark.asyncio
-    @patch("fscheduler.backends.redis_backend.Redis")
+    @patch("chronflow.backends.redis_backend.Redis")
     async def test_enqueue(self, mock_redis_class):
         """测试入队。"""
-        from fscheduler.backends.redis_backend import RedisBackend
+        from chronflow.backends.redis_backend import RedisBackend
 
         mock_redis = AsyncMock()
         mock_redis.ping = AsyncMock()
@@ -82,7 +82,7 @@ class TestRedisBackendMocked:
     @pytest.mark.asyncio
     async def test_enqueue_without_connection(self):
         """测试未连接时入队。"""
-        from fscheduler.backends.redis_backend import RedisBackend
+        from chronflow.backends.redis_backend import RedisBackend
 
         backend = RedisBackend()
 
@@ -96,12 +96,12 @@ class TestRedisBackendMocked:
             )
 
     @pytest.mark.asyncio
-    @patch("fscheduler.backends.redis_backend.Redis")
+    @patch("chronflow.backends.redis_backend.Redis")
     async def test_dequeue(self, mock_redis_class):
         """测试出队。"""
         import json
 
-        from fscheduler.backends.redis_backend import RedisBackend
+        from chronflow.backends.redis_backend import RedisBackend
 
         # 创建 mock task JSON
         task_json = json.dumps(
@@ -138,7 +138,7 @@ class TestRedisBackendMocked:
     @pytest.mark.asyncio
     async def test_dequeue_without_connection(self):
         """测试未连接时出队。"""
-        from fscheduler.backends.redis_backend import RedisBackend
+        from chronflow.backends.redis_backend import RedisBackend
 
         backend = RedisBackend()
 
@@ -146,10 +146,10 @@ class TestRedisBackendMocked:
             await backend.dequeue(limit=1)
 
     @pytest.mark.asyncio
-    @patch("fscheduler.backends.redis_backend.Redis")
+    @patch("chronflow.backends.redis_backend.Redis")
     async def test_acknowledge(self, mock_redis_class):
         """测试确认任务。"""
-        from fscheduler.backends.redis_backend import RedisBackend
+        from chronflow.backends.redis_backend import RedisBackend
 
         mock_redis = AsyncMock()
         mock_redis.ping = AsyncMock()
@@ -167,7 +167,7 @@ class TestRedisBackendMocked:
     @pytest.mark.asyncio
     async def test_acknowledge_without_connection(self):
         """测试未连接时确认。"""
-        from fscheduler.backends.redis_backend import RedisBackend
+        from chronflow.backends.redis_backend import RedisBackend
 
         backend = RedisBackend()
 
@@ -175,10 +175,10 @@ class TestRedisBackendMocked:
             await backend.acknowledge("task1")
 
     @pytest.mark.asyncio
-    @patch("fscheduler.backends.redis_backend.Redis")
+    @patch("chronflow.backends.redis_backend.Redis")
     async def test_reject(self, mock_redis_class):
         """测试拒绝任务。"""
-        from fscheduler.backends.redis_backend import RedisBackend
+        from chronflow.backends.redis_backend import RedisBackend
 
         mock_redis = AsyncMock()
         mock_redis.ping = AsyncMock()
@@ -196,7 +196,7 @@ class TestRedisBackendMocked:
     @pytest.mark.asyncio
     async def test_reject_without_connection(self):
         """测试未连接时拒绝。"""
-        from fscheduler.backends.redis_backend import RedisBackend
+        from chronflow.backends.redis_backend import RedisBackend
 
         backend = RedisBackend()
 
@@ -204,10 +204,10 @@ class TestRedisBackendMocked:
             await backend.reject("task1", requeue=False)
 
     @pytest.mark.asyncio
-    @patch("fscheduler.backends.redis_backend.Redis")
+    @patch("chronflow.backends.redis_backend.Redis")
     async def test_get_queue_size(self, mock_redis_class):
         """测试获取队列大小。"""
-        from fscheduler.backends.redis_backend import RedisBackend
+        from chronflow.backends.redis_backend import RedisBackend
 
         mock_redis = AsyncMock()
         mock_redis.ping = AsyncMock()
@@ -227,7 +227,7 @@ class TestRedisBackendMocked:
     @pytest.mark.asyncio
     async def test_get_queue_size_without_connection(self):
         """测试未连接时获取队列大小。"""
-        from fscheduler.backends.redis_backend import RedisBackend
+        from chronflow.backends.redis_backend import RedisBackend
 
         backend = RedisBackend()
 
@@ -235,10 +235,10 @@ class TestRedisBackendMocked:
             await backend.get_queue_size()
 
     @pytest.mark.asyncio
-    @patch("fscheduler.backends.redis_backend.Redis")
+    @patch("chronflow.backends.redis_backend.Redis")
     async def test_clear(self, mock_redis_class):
         """测试清空队列。"""
-        from fscheduler.backends.redis_backend import RedisBackend
+        from chronflow.backends.redis_backend import RedisBackend
 
         mock_redis = AsyncMock()
         mock_redis.ping = AsyncMock()
@@ -263,7 +263,7 @@ class TestRedisBackendMocked:
     @pytest.mark.asyncio
     async def test_clear_without_connection(self):
         """测试未连接时清空队列。"""
-        from fscheduler.backends.redis_backend import RedisBackend
+        from chronflow.backends.redis_backend import RedisBackend
 
         backend = RedisBackend()
 
@@ -271,10 +271,10 @@ class TestRedisBackendMocked:
             await backend.clear()
 
     @pytest.mark.asyncio
-    @patch("fscheduler.backends.redis_backend.Redis")
+    @patch("chronflow.backends.redis_backend.Redis")
     async def test_health_check(self, mock_redis_class):
         """测试健康检查。"""
-        from fscheduler.backends.redis_backend import RedisBackend
+        from chronflow.backends.redis_backend import RedisBackend
 
         mock_redis = AsyncMock()
         mock_redis.ping = AsyncMock()
@@ -290,10 +290,10 @@ class TestRedisBackendMocked:
         assert mock_redis.ping.call_count == 2
 
     @pytest.mark.asyncio
-    @patch("fscheduler.backends.redis_backend.Redis")
+    @patch("chronflow.backends.redis_backend.Redis")
     async def test_health_check_failure(self, mock_redis_class):
         """测试健康检查失败。"""
-        from fscheduler.backends.redis_backend import RedisBackend
+        from chronflow.backends.redis_backend import RedisBackend
 
         mock_redis = AsyncMock()
         mock_redis.ping = AsyncMock(side_effect=[None, Exception("Connection lost")])

@@ -13,7 +13,7 @@ except ImportError as err:
         "Redis backend requires redis package. Install with: pip install redis"
     ) from err
 
-from fscheduler.backends.base import QueueBackend
+from chronflow.backends.base import QueueBackend
 
 
 class RedisBackend(QueueBackend):
@@ -31,8 +31,8 @@ class RedisBackend(QueueBackend):
     def __init__(
         self,
         url: str = "redis://localhost:6379/0",
-        queue_name: str = "fscheduler:queue",
-        pending_set: str = "fscheduler:pending",
+        queue_name: str = "chronflow:queue",
+        pending_set: str = "chronflow:pending",
         max_connections: int = 10,
     ) -> None:
         """初始化 Redis 后端。

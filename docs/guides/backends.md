@@ -1,6 +1,6 @@
 # 队列后端
 
-fscheduler 支持多种队列后端，你可以根据应用场景选择合适的后端。
+chronflow 支持多种队列后端，你可以根据应用场景选择合适的后端。
 
 ## 后端对比
 
@@ -24,7 +24,7 @@ fscheduler 支持多种队列后端，你可以根据应用场景选择合适的
 ### 使用方法
 
 ```python
-from fscheduler import Scheduler
+from chronflow import Scheduler
 
 # 默认使用内存后端
 scheduler = Scheduler()
@@ -49,8 +49,8 @@ scheduler = Scheduler()
 ### 使用方法
 
 ```python
-from fscheduler import Scheduler
-from fscheduler.backends import SQLiteBackend
+from chronflow import Scheduler
+from chronflow.backends import SQLiteBackend
 
 # 创建 SQLite 后端
 backend = SQLiteBackend(db_path="scheduler.db")
@@ -97,7 +97,7 @@ CREATE INDEX idx_status ON task_queue(status);
 ### 清理历史数据
 
 ```python
-from fscheduler.backends import SQLiteBackend
+from chronflow.backends import SQLiteBackend
 
 backend = SQLiteBackend("scheduler.db")
 
@@ -118,14 +118,14 @@ await backend.cleanup_old_tasks(days=7)
 ### 安装
 
 ```bash
-pip install getaix-chronflow[redis]
+pip install chronflow[redis]
 ```
 
 ### 使用方法
 
 ```python
-from fscheduler import Scheduler
-from fscheduler.backends import RedisBackend
+from chronflow import Scheduler
+from chronflow.backends import RedisBackend
 
 # 创建 Redis 后端
 backend = RedisBackend(url="redis://localhost:6379/0")
@@ -137,7 +137,7 @@ scheduler = Scheduler(backend=backend)
 ```python
 backend = RedisBackend(
     url="redis://localhost:6379/0",     # Redis 连接 URL
-    key_prefix="fscheduler:",            # 键前缀
+    key_prefix="chronflow:",            # 键前缀
     max_connections=10,                  # 最大连接数
     socket_timeout=5.0,                  # Socket 超时
     socket_connect_timeout=5.0,          # 连接超时
@@ -178,12 +178,12 @@ RedisBackend 使用以下 Redis 数据结构：
 
 ```python
 # 任务队列 (zset)
-# Key: fscheduler:queue
+# Key: chronflow:queue
 # Score: scheduled_time - priority*1000
 # Member: JSON 序列化的任务数据
 
 # 正在执行的任务 (set)
-# Key: fscheduler:pending
+# Key: chronflow:pending
 # Members: task IDs
 ```
 
@@ -200,14 +200,14 @@ RedisBackend 使用以下 Redis 数据结构：
 ### 安装
 
 ```bash
-pip install getaix-chronflow[rabbitmq]
+pip install chronflow[rabbitmq]
 ```
 
 ### 使用方法
 
 ```python
-from fscheduler import Scheduler
-from fscheduler.backends import RabbitMQBackend
+from chronflow import Scheduler
+from chronflow.backends import RabbitMQBackend
 
 # 创建 RabbitMQ 后端
 backend = RabbitMQBackend(url="amqp://guest:guest@localhost:5672/")
@@ -219,8 +219,8 @@ scheduler = Scheduler(backend=backend)
 ```python
 backend = RabbitMQBackend(
     url="amqp://guest:guest@localhost:5672/",  # RabbitMQ 连接 URL
-    queue_name="fscheduler_tasks",             # 队列名称
-    exchange_name="fscheduler",                # 交换机名称
+    queue_name="chronflow_tasks",             # 队列名称
+    exchange_name="chronflow",                # 交换机名称
     durable=True,                              # 持久化队列
     max_priority=10,                           # 最大优先级
 )
@@ -250,8 +250,8 @@ backend = RabbitMQBackend(
 你可以实现自己的队列后端：
 
 ```python
-from fscheduler.backends import QueueBackend
-from fscheduler.task import Task
+from chronflow.backends import QueueBackend
+from chronflow.task import Task
 from datetime import datetime
 from typing import Optional
 
@@ -333,8 +333,8 @@ scheduler = Scheduler(backend=backend)
 从一个后端迁移到另一个后端：
 
 ```python
-from fscheduler import Scheduler
-from fscheduler.backends import MemoryBackend, SQLiteBackend
+from chronflow import Scheduler
+from chronflow.backends import MemoryBackend, SQLiteBackend
 
 # 旧调度器（内存后端）
 old_scheduler = Scheduler(backend=MemoryBackend())

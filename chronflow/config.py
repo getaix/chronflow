@@ -22,7 +22,7 @@ class SchedulerConfig(BaseSettings):
 
     支持从以下来源加载配置(优先级从高到低):
     1. 直接传入的参数
-    2. 环境变量(前缀 FSCHEDULER_)
+    2. 环境变量(前缀 chronflow_)
     3. .env 文件
     4. 默认值
 
@@ -33,12 +33,12 @@ class SchedulerConfig(BaseSettings):
         # 自定义配置
         config = SchedulerConfig(max_workers=20, log_level="DEBUG")
 
-        # 从环境变量(FSCHEDULER_MAX_WORKERS=20)
+        # 从环境变量(chronflow_MAX_WORKERS=20)
         config = SchedulerConfig()
     """
 
     model_config = SettingsConfigDict(
-        env_prefix="FSCHEDULER_",  # 环境变量前缀
+        env_prefix="chronflow_",  # 环境变量前缀
         env_file=".env",  # 环境变量文件
         env_file_encoding="utf-8",  # 文件编码
         case_sensitive=False,  # 不区分大小写
@@ -84,7 +84,7 @@ class SchedulerConfig(BaseSettings):
     )
 
     persistence_path: Path = Field(
-        default=Path(".fscheduler_state.json"),
+        default=Path(".chronflow_state.json"),
         description="持久化文件路径,用于保存调度器状态",
     )
 

@@ -1,6 +1,6 @@
 # 概览
 
-fscheduler 是一个高性能的 Python 异步定时任务调度库，专为 Python 3.11+ 设计。它提供了简洁的装饰器 API、多种队列后端支持、智能重试机制以及完整的类型安全保障。
+chronflow 是一个高性能的 Python 异步定时任务调度库，专为 Python 3.11+ 设计。它提供了简洁的装饰器 API、多种队列后端支持、智能重试机制以及完整的类型安全保障。
 
 - 基于 asyncio 的原生异步支持，高并发、低延迟
 - 支持秒级 Cron 表达式定时任务
@@ -49,23 +49,23 @@ async def my_task():
 
 ```bash
 # 基础安装（内存/SQLite 后端）
-pip install getaix-chronflow
+pip install chronflow
 
 # 使用 Redis
-pip install getaix-chronflow[redis]
+pip install chronflow[redis]
 
 # 使用 RabbitMQ
-pip install getaix-chronflow[rabbitmq]
+pip install chronflow[rabbitmq]
 
 # 完整安装（所有后端）
-pip install getaix-chronflow[all]
+pip install chronflow[all]
 ```
 
 ## 5 分钟上手
 
 ```python
 import asyncio
-from fscheduler import Scheduler, cron, interval
+from chronflow import Scheduler, cron, interval
 
 scheduler = Scheduler()
 
@@ -86,7 +86,7 @@ if __name__ == "__main__":
 
 更多详细示例请查看 [快速开始](quickstart.md) 文档。
 
-## 为什么选择 fscheduler？
+## 为什么选择 chronflow？
 
 ### vs Celery
 - ✅ 更轻量 - 无需 Redis/RabbitMQ 即可运行

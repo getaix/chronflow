@@ -1,8 +1,8 @@
-site_name: fscheduler
+site_name: chronflow
 site_description: 高性能异步定时任务调度库
-site_url: https://getaix.github.io/fscheduler
-site_author: fscheduler Contributors
-repo_url: https://github.com/getaix/fscheduler
+site_url: https://getaix.github.io/chronflow
+site_author: chronflow Contributors
+repo_url: https://github.com/getaix/chronflow
 
 theme:
   name: material
@@ -102,6 +102,6 @@ markdown_extensions:
 extra:
   social:
     - icon: fontawesome/brands/github
-      link: https://github.com/getaix/fscheduler
+      link: https://github.com/getaix/chronflow
   version:
     provider: mike

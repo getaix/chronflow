@@ -1,5 +1,5 @@
 [run]
-source = fscheduler
+source = chronflow
 omit =
     */tests/*
     */test_*.py

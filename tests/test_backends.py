@@ -6,8 +6,8 @@ from pathlib import Path
 
 import pytest
 
-from fscheduler.backends.memory import MemoryBackend
-from fscheduler.backends.sqlite_backend import SQLiteBackend
+from chronflow.backends.memory import MemoryBackend
+from chronflow.backends.sqlite_backend import SQLiteBackend
 
 
 class TestMemoryBackend:

@@ -1,10 +1,10 @@
 # Backends API
 
-fscheduler 提供多种队列后端实现，支持不同的使用场景。
+chronflow 提供多种队列后端实现，支持不同的使用场景。
 
 ## QueueBackend (抽象基类)
 
-::: fscheduler.backends.base.QueueBackend
+::: chronflow.backends.base.QueueBackend
     options:
       show_source: false
       heading_level: 3
@@ -13,7 +13,7 @@ fscheduler 提供多种队列后端实现，支持不同的使用场景。
 
 ## MemoryBackend
 
-::: fscheduler.backends.memory.MemoryBackend
+::: chronflow.backends.memory.MemoryBackend
     options:
       show_source: false
       heading_level: 3
@@ -22,7 +22,7 @@ fscheduler 提供多种队列后端实现，支持不同的使用场景。
 
 ## SQLiteBackend
 
-::: fscheduler.backends.sqlite_backend.SQLiteBackend
+::: chronflow.backends.sqlite_backend.SQLiteBackend
     options:
       show_source: false
       heading_level: 3
@@ -31,7 +31,7 @@ fscheduler 提供多种队列后端实现，支持不同的使用场景。
 
 ## RedisBackend
 
-::: fscheduler.backends.redis_backend.RedisBackend
+::: chronflow.backends.redis_backend.RedisBackend
     options:
       show_source: false
       heading_level: 3
@@ -40,7 +40,7 @@ fscheduler 提供多种队列后端实现，支持不同的使用场景。
 
 ## RabbitMQBackend
 
-::: fscheduler.backends.rabbitmq_backend.RabbitMQBackend
+::: chronflow.backends.rabbitmq_backend.RabbitMQBackend
     options:
       show_source: false
       heading_level: 3

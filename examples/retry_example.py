@@ -3,7 +3,7 @@
 import asyncio
 import random
 
-from fscheduler import RetryPolicy, Scheduler, interval
+from chronflow import RetryPolicy, Scheduler, interval
 
 scheduler = Scheduler()
 

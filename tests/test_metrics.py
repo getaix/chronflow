@@ -5,9 +5,9 @@ from datetime import datetime
 
 import pytest
 
-from fscheduler.metrics import MetricsCollector
-from fscheduler.scheduler import Scheduler
-from fscheduler.task import ScheduleType, Task, TaskConfig
+from chronflow.metrics import MetricsCollector
+from chronflow.scheduler import Scheduler
+from chronflow.task import ScheduleType, Task, TaskConfig
 
 
 class TestMetricsCollector:
@@ -130,14 +130,14 @@ class TestMetricsCollector:
         prometheus_text = collector.export_prometheus()
 
         # 检查基本指标
-        assert "fscheduler_uptime_seconds" in prometheus_text
-        assert "fscheduler_executions_total 2" in prometheus_text
-        assert "fscheduler_executions_success 1" in prometheus_text
-        assert "fscheduler_executions_failed 1" in prometheus_text
-        assert "fscheduler_duration_seconds_total 2.0" in prometheus_text
+        assert "chronflow_uptime_seconds" in prometheus_text
+        assert "chronflow_executions_total 2" in prometheus_text
+        assert "chronflow_executions_success 1" in prometheus_text
+        assert "chronflow_executions_failed 1" in prometheus_text
+        assert "chronflow_duration_seconds_total 2.0" in prometheus_text
 
         # 检查任务级别指标
-        assert 'fscheduler_task_executions{task="test_task"} 2' in prometheus_text
+        assert 'chronflow_task_executions{task="test_task"} 2' in prometheus_text
         assert 'task="test_task",stat="avg"' in prometheus_text
         assert 'task="test_task",stat="min"' in prometheus_text
         assert 'task="test_task",stat="max"' in prometheus_text
@@ -257,7 +257,7 @@ class TestSchedulerMetrics:
 
         prometheus_text = scheduler.export_prometheus_metrics()
         assert prometheus_text is not None
-        assert "fscheduler_executions_total" in prometheus_text
+        assert "chronflow_executions_total" in prometheus_text
         assert 'task="prometheus_task"' in prometheus_text
 
     @pytest.mark.asyncio

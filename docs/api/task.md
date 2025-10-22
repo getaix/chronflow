@@ -2,7 +2,7 @@
 
 ## Task
 
-::: fscheduler.task.Task
+::: chronflow.task.Task
     options:
       show_source: false
       heading_level: 3
@@ -11,7 +11,7 @@
 
 ## TaskConfig
 
-::: fscheduler.task.TaskConfig
+::: chronflow.task.TaskConfig
     options:
       show_source: false
       heading_level: 3
@@ -20,7 +20,7 @@
 
 ## TaskStatus
 
-::: fscheduler.task.TaskStatus
+::: chronflow.task.TaskStatus
     options:
       show_source: false
       heading_level: 3
@@ -28,7 +28,7 @@
 
 ## ScheduleType
 
-::: fscheduler.task.ScheduleType
+::: chronflow.task.ScheduleType
     options:
       show_source: false
       heading_level: 3

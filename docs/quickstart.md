@@ -1,4 +1,4 @@
-# fscheduler 快速开始指南
+# chronflow 快速开始指南
 
 ## 5 分钟上手
 
@@ -6,12 +6,12 @@
 
 使用 uv (推荐):
 ```bash
-uv pip install getaix-chronflow
+uv pip install chronflow
 ```
 
 使用 pip:
 ```bash
-pip install getaix-chronflow
+pip install chronflow
 ```
 
 ### 2. 第一个定时任务
@@ -20,7 +20,7 @@ pip install getaix-chronflow
 
 ```python
 import asyncio
-from fscheduler import Scheduler, interval
+from chronflow import Scheduler, interval
 
 # 创建调度器
 scheduler = Scheduler()
@@ -28,7 +28,7 @@ scheduler = Scheduler()
 # 定义任务 - 每 5 秒执行一次
 @interval(5)
 async def hello_task():
-    print("Hello, fscheduler!")
+    print("Hello, chronflow!")
 
 # 运行调度器
 async def main():
@@ -46,7 +46,7 @@ python app.py
 ### 3. 使用 Cron 表达式
 
 ```python
-from fscheduler import cron
+from chronflow import cron
 
 # 每天上午 9 点执行
 @cron("0 0 9 * * *")
@@ -63,7 +63,7 @@ async def health_check():
 ### 4. 添加重试机制
 
 ```python
-from fscheduler import interval, RetryPolicy
+from chronflow import interval, RetryPolicy
 
 @interval(
     30,
@@ -82,8 +82,8 @@ async def important_task():
 ### 5. 使用持久化队列
 
 ```python
-from fscheduler import Scheduler
-from fscheduler.backends import SQLiteBackend
+from chronflow import Scheduler
+from chronflow.backends import SQLiteBackend
 
 # 使用 SQLite 持久化
 backend = SQLiteBackend(db_path="tasks.db")
@@ -99,12 +99,12 @@ async def persistent_task():
 
 ```bash
 # 安装 Redis 支持
-uv pip install getaix-chronflow[redis]
+uv pip install chronflow[redis]
 ```
 
 ```python
-from fscheduler import Scheduler, SchedulerConfig
-from fscheduler.backends import RedisBackend
+from chronflow import Scheduler, SchedulerConfig
+from chronflow.backends import RedisBackend
 
 # 配置 Redis 后端
 backend = RedisBackend(url="redis://localhost:6379/0")
@@ -174,7 +174,7 @@ timezone = "Asia/Shanghai"
 使用配置:
 
 ```python
-from fscheduler import Scheduler, SchedulerConfig
+from chronflow import Scheduler, SchedulerConfig
 
 config = SchedulerConfig.from_file("config.toml")
 scheduler = Scheduler(config=config)
