@@ -18,19 +18,15 @@ jobs:
         python-version: ['3.11', '3.12', '3.13']
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
-
       - name: Setup uv
         uses: astral-sh/setup-uv@v4
         with:
           version: "latest"
-
       - name: Sync dependencies (dev + all extras)
         run: uv sync --all-groups --extra all
-
       - name: Run pytest
         run: uv run pytest -q
 
@@ -40,20 +36,16 @@ jobs:
     continue-on-error: true
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-python@v5
         with:
           python-version: '3.14-dev'
           allow-prereleases: true
-
       - name: Setup uv
         uses: astral-sh/setup-uv@v4
         with:
           version: "latest"
-
       - name: Sync dependencies (dev + all extras)
         run: uv sync --all-groups --extra all
-
       - name: Run pytest
         run: uv run pytest -q
 
@@ -63,19 +55,15 @@ jobs:
     needs: test
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-
       - name: Setup uv
         uses: astral-sh/setup-uv@v4
         with:
           version: "latest"
-
       - name: Build sdist and wheel
         run: uv build
-
       - name: Upload dist artifacts
         uses: actions/upload-artifact@v4
         with:
