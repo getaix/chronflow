@@ -1,67 +1,67 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
-         <loc>https://getaix.github.io/fscheduler/</loc>
+         <loc>https://getaix.github.io/chronflow/</loc>
          <lastmod>2025-10-22</lastmod>
     </url>
     <url>
-         <loc>https://getaix.github.io/fscheduler/changelog/</loc>
+         <loc>https://getaix.github.io/chronflow/changelog/</loc>
          <lastmod>2025-10-22</lastmod>
     </url>
     <url>
-         <loc>https://getaix.github.io/fscheduler/contributing/</loc>
+         <loc>https://getaix.github.io/chronflow/contributing/</loc>
          <lastmod>2025-10-22</lastmod>
     </url>
     <url>
-         <loc>https://getaix.github.io/fscheduler/quickstart/</loc>
+         <loc>https://getaix.github.io/chronflow/quickstart/</loc>
          <lastmod>2025-10-22</lastmod>
     </url>
     <url>
-         <loc>https://getaix.github.io/fscheduler/api/backends/</loc>
+         <loc>https://getaix.github.io/chronflow/api/backends/</loc>
          <lastmod>2025-10-22</lastmod>
     </url>
     <url>
-         <loc>https://getaix.github.io/fscheduler/api/config/</loc>
+         <loc>https://getaix.github.io/chronflow/api/config/</loc>
          <lastmod>2025-10-22</lastmod>
     </url>
     <url>
-         <loc>https://getaix.github.io/fscheduler/api/decorators/</loc>
+         <loc>https://getaix.github.io/chronflow/api/decorators/</loc>
          <lastmod>2025-10-22</lastmod>
     </url>
     <url>
-         <loc>https://getaix.github.io/fscheduler/api/logging/</loc>
+         <loc>https://getaix.github.io/chronflow/api/logging/</loc>
          <lastmod>2025-10-22</lastmod>
     </url>
     <url>
-         <loc>https://getaix.github.io/fscheduler/api/metrics/</loc>
+         <loc>https://getaix.github.io/chronflow/api/metrics/</loc>
          <lastmod>2025-10-22</lastmod>
     </url>
     <url>
-         <loc>https://getaix.github.io/fscheduler/api/retry/</loc>
+         <loc>https://getaix.github.io/chronflow/api/retry/</loc>
          <lastmod>2025-10-22</lastmod>
     </url>
     <url>
-         <loc>https://getaix.github.io/fscheduler/api/scheduler/</loc>
+         <loc>https://getaix.github.io/chronflow/api/scheduler/</loc>
          <lastmod>2025-10-22</lastmod>
     </url>
     <url>
-         <loc>https://getaix.github.io/fscheduler/api/task/</loc>
+         <loc>https://getaix.github.io/chronflow/api/task/</loc>
          <lastmod>2025-10-22</lastmod>
     </url>
     <url>
-         <loc>https://getaix.github.io/fscheduler/guides/backends/</loc>
+         <loc>https://getaix.github.io/chronflow/guides/backends/</loc>
          <lastmod>2025-10-22</lastmod>
     </url>
     <url>
-         <loc>https://getaix.github.io/fscheduler/guides/logging/</loc>
+         <loc>https://getaix.github.io/chronflow/guides/logging/</loc>
          <lastmod>2025-10-22</lastmod>
     </url>
     <url>
-         <loc>https://getaix.github.io/fscheduler/guides/metrics/</loc>
+         <loc>https://getaix.github.io/chronflow/guides/metrics/</loc>
          <lastmod>2025-10-22</lastmod>
     </url>
     <url>
-         <loc>https://getaix.github.io/fscheduler/guides/monitoring/</loc>
+         <loc>https://getaix.github.io/chronflow/guides/monitoring/</loc>
          <lastmod>2025-10-22</lastmod>
     </url>
 </urlset>
