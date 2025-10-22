@@ -26,9 +26,9 @@ jobs:
         with:
           version: "latest"
       - name: Sync dependencies (dev + all extras)
-        run: uv sync --all-groups --extra all
+        run: uv sync --extra dev --extra all
       - name: Run pytest
-        run: uv run pytest -q
+        run: uv run -m pytest -q
 
   test-future:
     name: Run tests (experimental 3.14-dev)
@@ -45,9 +45,9 @@ jobs:
         with:
           version: "latest"
       - name: Sync dependencies (dev + all extras)
-        run: uv sync --all-groups --extra all
+        run: uv sync --extra dev --extra all
       - name: Run pytest
-        run: uv run pytest -q
+        run: uv run -m pytest -q
 
   build:
     name: Build distributions
