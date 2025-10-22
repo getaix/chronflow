@@ -31,7 +31,7 @@ class QueueBackend(ABC):
     ) -> None:
         """将任务加入队列。
 
-        参数:
+        Args:
             task_id: 任务的唯一标识
             task_name: 任务名称
             scheduled_time: 任务计划执行时间
@@ -44,10 +44,10 @@ class QueueBackend(ABC):
     async def dequeue(self, limit: int = 1) -> list[dict[str, Any]]:
         """从队列中获取就绪任务。
 
-        参数:
+        Args:
             limit: 最多获取的任务数量
 
-        返回值:
+        Returns:
             已准备执行的任务负载列表
         """
         pass
@@ -56,7 +56,7 @@ class QueueBackend(ABC):
     async def acknowledge(self, task_id: str) -> None:
         """标记任务成功完成。
 
-        参数:
+        Args:
             task_id: 已完成任务的标识
         """
         pass
@@ -65,7 +65,7 @@ class QueueBackend(ABC):
     async def reject(self, task_id: str, requeue: bool = False) -> None:
         """标记任务执行失败。
 
-        参数:
+        Args:
             task_id: 失败任务的标识
             requeue: 是否将任务重新入队
         """

@@ -21,7 +21,7 @@ class MemoryBackend(QueueBackend):
     def __init__(self, max_size: int = 10000) -> None:
         """初始化内存后端。
 
-        参数:
+        Args:
             max_size: 队列允许的最大任务数量
         """
         self.max_size = max_size

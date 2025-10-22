@@ -36,7 +36,7 @@ class RabbitMQBackend(QueueBackend):
     ) -> None:
         """初始化 RabbitMQ 后端。
 
-        参数:
+        Args:
             url: RabbitMQ 连接 URL
             queue_name: 队列名称
             durable: 是否持久化队列

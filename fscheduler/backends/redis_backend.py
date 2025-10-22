@@ -37,7 +37,7 @@ class RedisBackend(QueueBackend):
     ) -> None:
         """初始化 Redis 后端。
 
-        参数:
+        Args:
             url: Redis 连接 URL
             queue_name: Redis 有序集合的队列名称
             pending_set: Redis 集合用于记录待处理任务的名称

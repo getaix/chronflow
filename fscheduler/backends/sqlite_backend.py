@@ -34,7 +34,7 @@ class SQLiteBackend(QueueBackend):
     ) -> None:
         """初始化 SQLite 后端。
 
-        参数:
+        Args:
             db_path: 数据库文件路径
             table_name: 任务队列表名
         """
@@ -277,10 +277,10 @@ class SQLiteBackend(QueueBackend):
     async def get_failed_tasks(self, limit: int = 100) -> list[dict[str, Any]]:
         """获取失败的任务列表。
 
-        参数:
+        Args:
             limit: 返回的最大任务数
 
-        返回值:
+        Returns:
             失败任务列表
         """
         if not self._conn:
@@ -314,10 +314,10 @@ class SQLiteBackend(QueueBackend):
     async def cleanup_old_tasks(self, days: int = 7) -> int:
         """清理旧任务记录。
 
-        参数:
+        Args:
             days: 保留最近多少天的任务
 
-        返回值:
+        Returns:
             删除的任务数量
         """
         if not self._conn:
