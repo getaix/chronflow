@@ -6,12 +6,12 @@
 
 使用 uv (推荐):
 ```bash
-uv pip install fscheduler
+uv pip install getaix-chronflow
 ```
 
 使用 pip:
 ```bash
-pip install fscheduler
+pip install getaix-chronflow
 ```
 
 ### 2. 第一个定时任务
@@ -99,7 +99,7 @@ async def persistent_task():
 
 ```bash
 # 安装 Redis 支持
-uv pip install fscheduler[redis]
+uv pip install getaix-chronflow[redis]
 ```
 
 ```python

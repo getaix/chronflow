@@ -23,29 +23,29 @@
 ### 基础安装(仅内存/SQLite后端)
 
 ```bash
-pip install fscheduler
+pip install getaix-chronflow
 ```
 
 ### 安装 Redis 支持
 
 ```bash
-pip install fscheduler[redis]
+pip install getaix-chronflow[redis]
 # 或
-pip install fscheduler redis
+pip install getaix-chronflow redis
 ```
 
 ### 安装 RabbitMQ 支持
 
 ```bash
-pip install fscheduler[rabbitmq]
+pip install getaix-chronflow[rabbitmq]
 # 或
-pip install fscheduler aio-pika
+pip install getaix-chronflow aio-pika
 ```
 
 ### 完整安装
 
 ```bash
-pip install fscheduler[all]
+pip install getaix-chronflow[all]
 ```
 
 ## 快速开始

@@ -18,7 +18,7 @@ scheduler = Scheduler()
 安装 structlog：
 
 ```bash
-pip install fscheduler[structlog]
+pip install getaix-chronflow[structlog]
 ```
 
 ### Loguru
@@ -40,7 +40,7 @@ scheduler = Scheduler(logger=LoguruAdapter(logger))
 安装 loguru：
 
 ```bash
-pip install fscheduler[loguru]
+pip install getaix-chronflow[loguru]
 ```
 
 ### Python 标准库 logging

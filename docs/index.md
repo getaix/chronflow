@@ -49,16 +49,16 @@ async def my_task():
 
 ```bash
 # 基础安装（内存/SQLite 后端）
-pip install fscheduler
+pip install getaix-chronflow
 
 # 使用 Redis
-pip install fscheduler[redis]
+pip install getaix-chronflow[redis]
 
 # 使用 RabbitMQ
-pip install fscheduler[rabbitmq]
+pip install getaix-chronflow[rabbitmq]
 
 # 完整安装（所有后端）
-pip install fscheduler[all]
+pip install getaix-chronflow[all]
 ```
 
 ## 5 分钟上手

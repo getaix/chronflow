@@ -118,7 +118,7 @@ await backend.cleanup_old_tasks(days=7)
 ### 安装
 
 ```bash
-pip install fscheduler[redis]
+pip install getaix-chronflow[redis]
 ```
 
 ### 使用方法
@@ -200,7 +200,7 @@ RedisBackend 使用以下 Redis 数据结构：
 ### 安装
 
 ```bash
-pip install fscheduler[rabbitmq]
+pip install getaix-chronflow[rabbitmq]
 ```
 
 ### 使用方法
