@@ -1,0 +1,112 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "fscheduler"
+version = "0.1.0"
+description = "A high-performance async task scheduler with cron support, retry mechanism, and configuration management"
+authors = [
+    {name = "Your Name", email = "your.email@example.com"},
+]
+readme = "README.md"
+requires-python = ">=3.11"
+license = {text = "MIT"}
+keywords = ["async", "scheduler", "task", "queue", "cron", "timer", "asyncio"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Framework :: AsyncIO",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: System :: Monitoring",
+    "Typing :: Typed",
+]
+
+dependencies = [
+    "croniter>=2.0.0",
+    "pydantic>=2.0.0",
+    "pydantic-settings>=2.0.0",
+    "tenacity>=8.2.0",
+    "python-dateutil>=2.8.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",
+    "pytest-asyncio>=0.21.0",
+    "pytest-cov>=4.1.0",
+    "mypy>=1.5.0",
+    "ruff>=0.1.0",
+    "black>=23.0.0",
+    "build>=1.0.0",
+    "twine>=4.0.0",
+]
+docs = [
+    "mkdocs>=1.5.0",
+    "mkdocs-material>=9.5.0",
+    "mkdocstrings[python]>=0.24.0",
+    "pymdown-extensions>=10.7.0",
+]
+structlog = [
+    "structlog>=23.0.0",
+]
+loguru = [
+    "loguru>=0.7.0",
+]
+redis = [
+    "redis[hiredis]>=5.0.0",
+]
+rabbitmq = [
+    "aio-pika>=9.0.0",
+]
+yaml = [
+    "pyyaml>=6.0",
+]
+all = [
+    "structlog>=23.0.0",
+    "loguru>=0.7.0",
+    "redis[hiredis]>=5.0.0",
+    "aio-pika>=9.0.0",
+    "pyyaml>=6.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/getaix/fscheduler"
+Documentation = "https://getaix.github.io/fscheduler"
+Repository = "https://github.com/getaix/fscheduler"
+Issues = "https://github.com/getaix/fscheduler/issues"
+Changelog = "https://getaix.github.io/fscheduler/changelog/"
+
+[tool.hatch.build.targets.wheel]
+packages = ["fscheduler"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "W", "UP", "B", "A", "C4", "T20", "SIM"]
+ignore = []
+
+[tool.black]
+line-length = 100
+target-version = ["py311"]

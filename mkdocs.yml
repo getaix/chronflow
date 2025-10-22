@@ -1,0 +1,107 @@
+site_name: fscheduler
+site_description: 高性能异步定时任务调度库
+site_url: https://getaix.github.io/fscheduler
+site_author: fscheduler Contributors
+repo_url: https://github.com/getaix/fscheduler
+
+theme:
+  name: material
+  language: zh
+  palette:
+    # 浅色模式
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: 切换到深色模式
+    # 深色模式
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: 切换到浅色模式
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+
+nav:
+  - 概览: index.md
+  - 快速开始: quickstart.md
+  - 使用指南:
+      - 日志系统: guides/logging.md
+      - 监控与统计: guides/monitoring.md
+      - 性能指标: guides/metrics.md
+      - 队列后端: guides/backends.md
+  - API 文档:
+      - Scheduler: api/scheduler.md
+      - Task: api/task.md
+      - Config: api/config.md
+      - Decorators: api/decorators.md
+      - Retry: api/retry.md
+      - Logging: api/logging.md
+      - Metrics: api/metrics.md
+      - Backends: api/backends.md
+  - 更新日志: changelog.md
+  - 贡献指南: contributing.md
+
+plugins:
+  - search:
+      lang:
+        - zh
+        - en
+  - mkdocstrings:
+      handlers:
+        python:
+          paths:
+            - .
+          options:
+            show_source: false
+            heading_level: 2
+            merge_init_into_class: true
+            docstring_style: google
+            show_root_heading: true
+            show_root_full_path: false
+            show_symbol_type_heading: true
+            show_symbol_type_toc: true
+            members_order: source
+
+markdown_extensions:
+  - admonition
+  - toc:
+      permalink: true
+  - tables
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - attr_list
+  - md_in_html
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/getaix/fscheduler
+  version:
+    provider: mike
