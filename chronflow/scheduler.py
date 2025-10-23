@@ -3,14 +3,15 @@
 from __future__ import annotations
 
 import asyncio
-import signal
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Any
+from zoneinfo import ZoneInfo
 
 from chronflow.backends.base import QueueBackend
-from chronflow.backends.memory import MemoryBackend
+from chronflow.daemon import SchedulerDaemon
+from chronflow.decorators import set_global_scheduler
 from chronflow.config import SchedulerConfig
 from chronflow.logging import LoggerAdapter, get_default_logger
 from chronflow.metrics import MetricsCollector
@@ -35,23 +36,27 @@ class Scheduler:
         backend: QueueBackend | None = None,
         logger: LoggerAdapter | None = None,
         enable_metrics: bool = False,
+        use_global_scheduler: bool = True,
     ) -> None:
         """初始化调度器。
 
         参数:
             config: 调度器配置,默认使用 SchedulerConfig()
-            backend: 队列后端,默认使用 MemoryBackend
+            backend: 队列后端,默认依据配置自动实例化
             logger: 日志适配器,默认使用 structlog
             enable_metrics: 是否启用性能指标收集
+            use_global_scheduler: 是否将当前实例注册为全局调度器,以支持装饰器自动注册
         """
         self.config = config or SchedulerConfig()
-        self.backend = backend or MemoryBackend(max_size=self.config.queue_size)
+        self.backend = backend or self.config.create_backend()
 
         # 任务管理
         self._tasks: dict[str, Task] = {}
+        self._task_next_run_times: dict[str, datetime | None] = {}
         self._running = False
         self._shutdown_event = asyncio.Event()
         self._worker_tasks: set[asyncio.Task[None]] = set()
+        self._daemon_controller: SchedulerDaemon | None = None
 
         # 配置日志
         if logger:
@@ -65,6 +70,9 @@ class Scheduler:
 
         # 配置指标收集
         self.metrics_collector = MetricsCollector() if enable_metrics else None
+
+        if use_global_scheduler:
+            set_global_scheduler(self)
 
     def set_logger(self, logger: LoggerAdapter) -> None:
         """设置日志适配器。
@@ -95,6 +103,7 @@ class Scheduler:
             raise ValueError(f"任务 '{task_name}' 已存在")
 
         self._tasks[task_name] = task
+        self._task_next_run_times[task_name] = task.config.get_next_run_time()
         self._log.info("任务已注册", task_name=task_name, task_id=task.id)
 
     def unregister_task(self, task_name: str) -> None:
@@ -105,6 +114,7 @@ class Scheduler:
         """
         if task_name in self._tasks:
             del self._tasks[task_name]
+            self._task_next_run_times.pop(task_name, None)
             self._log.info("任务已注销", task_name=task_name)
 
     def get_task(self, task_name: str) -> Task | None:
@@ -118,15 +128,23 @@ class Scheduler:
         """
         return self._tasks.get(task_name)
 
-    async def start(self, daemon: bool = False) -> None:
+    async def start(self, daemon: bool = False) -> int | None:
         """启动调度器。
 
         参数:
             daemon: 是否以守护进程模式运行
+
+        返回值:
+            守护进程模式下返回子进程 PID,否则返回 None
         """
+
+        if daemon:
+            controller = self._get_daemon_controller()
+            return await controller.start()
+
         if self._running:
             self._log.warning("调度器已在运行")
-            return
+            return None
 
         self._running = True
         self._shutdown_event.clear()
@@ -154,13 +172,13 @@ class Scheduler:
             self._worker_tasks.add(worker_task)
             worker_task.add_done_callback(self._worker_tasks.discard)
 
-        # 注册信号处理
-        if daemon:
-            self._register_signal_handlers()
-
         try:
             # 等待关闭信号
             await self._shutdown_event.wait()
+        except asyncio.CancelledError:
+            self._log.info("接收到取消信号，正在停止调度器")
+            self._shutdown_event.set()
+            raise  # 重新抛出,确保资源在正确状态下清理
         finally:
             # 停止调度循环
             scheduler_task.cancel()
@@ -173,14 +191,111 @@ class Scheduler:
 
             self._running = False
             self._log.info("调度器已停止")
+        return None
 
-    async def stop(self) -> None:
-        """停止调度器。"""
+    async def stop(
+        self,
+        daemon: bool = False,
+        *,
+        pid: int | None = None,
+        name: str | None = None,
+        timeout: float | None = None,
+    ) -> bool | None:
+        """停止调度器或守护进程。
+
+        参数:
+            daemon: 是否操作守护进程
+            pid: 指定守护进程 PID
+            name: 指定守护进程名称
+            timeout: 等待终止的超时时间
+        """
+
+        if daemon:
+            controller = self._get_daemon_controller()
+            return await controller.stop(pid=pid, name=name, timeout=timeout)
+
         if not self._running:
-            return
+            return None
 
         self._log.info("正在停止调度器...")
         self._shutdown_event.set()
+        return None
+
+    async def restart(
+        self,
+        daemon: bool = False,
+        *,
+        pid: int | None = None,
+        name: str | None = None,
+        timeout: float | None = None,
+    ) -> int | None:
+        """重启调度器或守护进程。"""
+
+        if daemon:
+            controller = self._get_daemon_controller()
+            return await controller.restart(pid=pid, name=name, timeout=timeout)
+
+        await self.stop()
+
+        # 等待调度器真正停止,避免竞态条件
+        max_wait_seconds = 10
+        for _ in range(max_wait_seconds * 10):
+            if not self._running:
+                break
+            await asyncio.sleep(0.1)
+        else:
+            raise RuntimeError(
+                f"调度器未能在 {max_wait_seconds} 秒内停止,无法重启"
+            )
+
+        return await self.start(daemon=daemon)
+
+    async def cleanup(
+        self,
+        daemon: bool = False,
+        *,
+        pid: int | None = None,
+        name: str | None = None,
+    ) -> bool:
+        """清理守护进程僵尸状态。"""
+
+        if not daemon:
+            return False
+
+        controller = self._get_daemon_controller()
+        return await controller.cleanup_zombies(pid=pid, name=name)
+
+    async def stop_daemon(
+        self,
+        *,
+        pid: int | None = None,
+        name: str | None = None,
+        timeout: float | None = None,
+    ) -> bool:
+        """保持兼容的守护进程停止接口。"""
+
+        return await self.stop(daemon=True, pid=pid, name=name, timeout=timeout)
+
+    async def restart_daemon(
+        self,
+        *,
+        pid: int | None = None,
+        name: str | None = None,
+        timeout: float | None = None,
+    ) -> int:
+        """保持兼容的守护进程重启接口。"""
+
+        return await self.restart(daemon=True, pid=pid, name=name, timeout=timeout)
+
+    async def cleanup_daemon(
+        self,
+        *,
+        pid: int | None = None,
+        name: str | None = None,
+    ) -> bool:
+        """保持兼容的守护进程清理接口。"""
+
+        return await self.cleanup(daemon=True, pid=pid, name=name)
 
     async def _schedule_loop(self) -> None:
         """任务调度主循环,负责将任务放入队列。"""
@@ -189,7 +304,8 @@ class Scheduler:
         while self._running:
             try:
                 await self._schedule_ready_tasks()
-                await asyncio.sleep(0.1)  # 每 100ms 检查一次
+                # 使用配置的检查间隔,默认 1秒
+                await asyncio.sleep(self.config.schedule_check_interval)
             except asyncio.CancelledError:
                 break
             except Exception as e:
@@ -200,24 +316,35 @@ class Scheduler:
 
     async def _schedule_ready_tasks(self) -> None:
         """检查并调度就绪的任务。"""
-        now = datetime.now()
+        # 使用配置的时区获取当前时间,确保与任务时间一致
+        try:
+            tz = ZoneInfo(self.config.timezone)
+            now = datetime.now(tz)
+        except Exception:
+            # 如果时区解析失败,降级为 UTC
+            now = datetime.now(timezone.utc)
 
         for task in self._tasks.values():
+            task_name = task.config.name
             if not task.config.enabled or task.is_cancelled():
                 continue
 
             # 计算下次运行时间
-            next_run = task.config.get_next_run_time()
+            next_run = self._task_next_run_times.get(task_name)
+
+            if next_run is None:
+                next_run = task.config.get_next_run_time(use_timezone=self.config.timezone)
+                self._task_next_run_times[task_name] = next_run
 
             if next_run and next_run <= now:
                 # 将任务加入队列
                 try:
                     await self.backend.enqueue(
                         task_id=task.id,
-                        task_name=task.config.name,
+                        task_name=task_name,
                         scheduled_time=next_run,
                         payload={
-                            "task_name": task.config.name,
+                            "task_name": task_name,
                             "scheduled_time": next_run.isoformat(),
                         },
                         priority=0,
@@ -225,14 +352,18 @@ class Scheduler:
 
                     self._log.debug(
                         "任务已加入队列",
-                        task_name=task.config.name,
+                        task_name=task_name,
                         next_run=next_run.isoformat(),
+                    )
+
+                    self._task_next_run_times[task_name] = task.config.get_next_run_time(
+                        after=next_run, use_timezone=self.config.timezone
                     )
 
                 except Exception as e:
                     self._log.error(
                         "任务入队失败",
-                        task_name=task.config.name,
+                        task_name=task_name,
                         error=str(e),
                     )
 
@@ -284,12 +415,16 @@ class Scheduler:
                             duration=execution_time,
                         )
 
-                    self._log.info(
-                        "任务执行成功",
-                        task_name=task_name,
-                        worker_id=worker_id,
-                        metrics=task.metrics.model_dump(),
-                    )
+                    log_payload = {
+                        "task_name": task_name,
+                        "worker_id": worker_id,
+                        "metrics": task.metrics.model_dump(),
+                    }
+
+                    if self.config.log_task_success:
+                        self._log.info("任务执行成功", **log_payload)
+                    else:
+                        self._log.debug("任务执行成功", **log_payload)
 
                 except Exception as e:
                     await self.backend.reject(task_id, requeue=False)
@@ -340,18 +475,6 @@ class Scheduler:
             )
 
         self._log.info("所有工作协程已关闭")
-
-    def _register_signal_handlers(self) -> None:
-        """注册系统信号处理器。"""
-        loop = asyncio.get_event_loop()
-
-        for sig in (signal.SIGINT, signal.SIGTERM):
-            loop.add_signal_handler(
-                sig,
-                lambda: asyncio.create_task(self.stop()),
-            )
-
-        self._log.info("信号处理器已注册")
 
     @asynccontextmanager
     async def run_context(self) -> AsyncIterator[Scheduler]:
@@ -577,6 +700,11 @@ class Scheduler:
         if self.metrics_collector:
             self.metrics_collector.reset()
             self._log.info("性能指标已重置")
+
+    def _get_daemon_controller(self) -> SchedulerDaemon:
+        if self._daemon_controller is None:
+            self._daemon_controller = SchedulerDaemon(self)
+        return self._daemon_controller
 
     def __repr__(self) -> str:
         """字符串表示。"""

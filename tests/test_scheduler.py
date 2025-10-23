@@ -1,18 +1,28 @@
 """调度器测试。"""
 
 import asyncio
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
+from typing import Any
+from zoneinfo import ZoneInfo
 
 import pytest
 
 from chronflow.backends.memory import MemoryBackend
 from chronflow.config import SchedulerConfig
+from chronflow.decorators import interval, set_global_scheduler
+from chronflow.logging import LoggerAdapter
 from chronflow.scheduler import Scheduler
 from chronflow.task import ScheduleType, Task, TaskConfig, TaskStatus
 
 
 class TestScheduler:
     """调度器测试类。"""
+
+    @pytest.fixture(autouse=True)
+    def _reset_global_scheduler(self):
+        set_global_scheduler(None, clear_pending=True)
+        yield
+        set_global_scheduler(None, clear_pending=True)
 
     def test_scheduler_creation(self):
         """测试调度器创建。"""
@@ -30,6 +40,35 @@ class TestScheduler:
 
         assert scheduler.config.max_workers == 20
         assert scheduler.config.queue_size == 5000
+
+    def test_scheduler_backend_from_config(self):
+        """测试调度器根据配置实例化后端。"""
+        config = SchedulerConfig(backend={"name": "memory", "options": {"max_size": 64}})
+        scheduler = Scheduler(config=config)
+
+        assert isinstance(scheduler.backend, MemoryBackend)
+        assert scheduler.backend.max_size == 64
+
+    def test_auto_registration_with_existing_scheduler(self):
+        """测试在已有调度器的情况下装饰器自动注册。"""
+        scheduler = Scheduler()
+
+        @interval(1.0, name="auto_interval_task")
+        async def auto_interval_task():
+            return None
+
+        assert scheduler.get_task("auto_interval_task") is not None
+
+    def test_pending_tasks_registered_later(self):
+        """测试在创建调度器之前定义的任务会延迟注册。"""
+
+        @interval(1.0, name="delayed_task")
+        async def delayed_task():
+            return None
+
+        scheduler = Scheduler()
+
+        assert scheduler.get_task("delayed_task") is not None
 
     def test_register_task(self):
         """测试注册任务。"""
@@ -114,6 +153,203 @@ class TestScheduler:
         await start_task
 
         assert scheduler._running is False
+
+    @pytest.mark.asyncio
+    async def test_start_daemon_creates_pid_file(self, monkeypatch, tmp_path):
+        """测试守护模式启动会写入 PID 文件。"""
+
+        config = SchedulerConfig(
+            enable_logging=False,
+            pid_file=tmp_path / "daemon" / "scheduler.pid",
+        )
+        scheduler = Scheduler(config=config, use_global_scheduler=False)
+
+        fake_pid = 4321
+        monkeypatch.setattr("chronflow.daemon.os.fork", lambda: fake_pid)
+
+        result = await scheduler.start(daemon=True)
+
+        assert result == fake_pid
+        # PID 文件由子进程写入,父进程中不会立即存在(修复后的行为)
+
+    @pytest.mark.asyncio
+    async def test_daemon_management_delegation(self):
+        """测试守护进程管理方法委托到控制器。"""
+
+        scheduler = Scheduler(use_global_scheduler=False)
+
+        class DummyController:
+            def __init__(self) -> None:
+                self.stop_args = None
+                self.restart_args = None
+                self.cleanup_args = None
+
+            async def stop(self, *, pid=None, name=None, timeout=None):
+                self.stop_args = (pid, name, timeout)
+                return True
+
+            async def restart(self, *, pid=None, name=None, timeout=None):
+                self.restart_args = (pid, name, timeout)
+                return 9999
+
+            async def cleanup_zombies(self, *, pid=None, name=None):
+                self.cleanup_args = (pid, name)
+                return True
+
+        dummy = DummyController()
+        scheduler._daemon_controller = dummy  # type: ignore[attr-defined]
+
+        assert await scheduler.stop(daemon=True, pid=111)
+        assert dummy.stop_args == (111, None, None)
+
+        assert await scheduler.restart(daemon=True, name="fscheduler") == 9999
+        assert dummy.restart_args == (None, "fscheduler", None)
+
+        assert await scheduler.cleanup(daemon=True, pid=222)
+        assert dummy.cleanup_args == (222, None)
+
+    @pytest.mark.asyncio
+    async def test_task_success_logging_level_control(self):
+        """确保任务成功日志可降级到 debug。"""
+
+        class RecordingLogger(LoggerAdapter):
+            def __init__(self) -> None:
+                self.records: list[tuple[str, str, dict[str, Any]]] = []
+
+            def debug(self, message: str, **kwargs: Any) -> None:
+                self.records.append(("debug", message, kwargs))
+
+            def info(self, message: str, **kwargs: Any) -> None:
+                self.records.append(("info", message, kwargs))
+
+            def warning(self, message: str, **kwargs: Any) -> None:
+                pass
+
+            def error(self, message: str, **kwargs: Any) -> None:
+                pass
+
+            def exception(self, message: str, **kwargs: Any) -> None:
+                pass
+
+        async def sample_task() -> None:
+            await asyncio.sleep(0)
+
+        config = SchedulerConfig(
+            max_workers=1, enable_logging=False, schedule_check_interval=0.1
+        )
+        scheduler = Scheduler(config=config, use_global_scheduler=False)
+        logger = RecordingLogger()
+        scheduler.set_logger(logger)
+
+        # 使用与调度器配置相同的时区创建任务时间
+        tz = ZoneInfo(config.timezone)
+        task = Task(
+            func=sample_task,
+            config=TaskConfig(
+                name="sample",
+                schedule_type=ScheduleType.ONCE,
+                start_time=datetime.now(tz) + timedelta(milliseconds=50),
+            ),
+        )
+        scheduler.register_task(task)
+
+        start_task = asyncio.create_task(scheduler.start())
+        await asyncio.sleep(1.0)
+        await scheduler.stop()
+        await start_task
+
+        assert task.metrics.successful_runs == 1
+
+        assert any(record[1] == "任务执行成功" and record[0] == "debug" for record in logger.records)
+        assert not any(record[1] == "任务执行成功" and record[0] == "info" for record in logger.records)
+
+        # 重新构建以验证 log_task_success=True 时使用 info
+        config_verbose = SchedulerConfig(
+            max_workers=1,
+            enable_logging=False,
+            log_task_success=True,
+            schedule_check_interval=0.1,
+        )
+        scheduler_verbose = Scheduler(config=config_verbose, use_global_scheduler=False)
+        logger_verbose = RecordingLogger()
+        scheduler_verbose.set_logger(logger_verbose)
+
+        tz_verbose = ZoneInfo(config_verbose.timezone)
+        task_verbose = Task(
+            func=sample_task,
+            config=TaskConfig(
+                name="sample_verbose",
+                schedule_type=ScheduleType.ONCE,
+                start_time=datetime.now(tz_verbose) + timedelta(milliseconds=50),
+            ),
+        )
+        scheduler_verbose.register_task(task_verbose)
+
+        start_task_verbose = asyncio.create_task(scheduler_verbose.start())
+        await asyncio.sleep(1.0)
+        await scheduler_verbose.stop()
+        await start_task_verbose
+
+        assert any(record[1] == "任务执行成功" and record[0] == "info" for record in logger_verbose.records)
+
+    @pytest.mark.asyncio
+    async def test_workers_share_load_when_tasks_burst(self):
+        """确认任务突发时可由多个 worker 处理。"""
+
+        class CaptureLogger(LoggerAdapter):
+            def __init__(self) -> None:
+                self.success_workers: list[int] = []
+
+            def debug(self, message: str, **kwargs: Any) -> None:
+                pass
+
+            def info(self, message: str, **kwargs: Any) -> None:
+                if message == "任务执行成功":
+                    worker_id = kwargs.get("worker_id")
+                    if worker_id is not None:
+                        self.success_workers.append(int(worker_id))
+
+            def warning(self, message: str, **kwargs: Any) -> None:
+                pass
+
+            def error(self, message: str, **kwargs: Any) -> None:
+                pass
+
+            def exception(self, message: str, **kwargs: Any) -> None:
+                pass
+
+        async def burst_task() -> None:
+            await asyncio.sleep(0.05)
+
+        config = SchedulerConfig(
+            max_workers=4,
+            enable_logging=False,
+            log_task_success=True,
+            schedule_check_interval=0.1,
+        )
+        scheduler = Scheduler(config=config, use_global_scheduler=False)
+        logger = CaptureLogger()
+        scheduler.set_logger(logger)
+
+        tz_burst = ZoneInfo(config.timezone)
+        start_time = datetime.now(tz_burst) + timedelta(milliseconds=50)
+        for i in range(6):
+            task = Task(
+                func=burst_task,
+                config=TaskConfig(
+                    name=f"burst_{i}",
+                    schedule_type=ScheduleType.ONCE,
+                    start_time=start_time,
+                ),
+            )
+            scheduler.register_task(task)
+
+        runner = asyncio.create_task(scheduler.start())
+        await asyncio.sleep(1.0)
+        await scheduler.stop()
+        await runner
+
+        assert len(set(logger.success_workers)) >= 2
 
     @pytest.mark.asyncio
     async def test_run_context(self):

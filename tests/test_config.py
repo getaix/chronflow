@@ -6,6 +6,9 @@ from pathlib import Path
 
 import pytest
 
+from chronflow.backends import register_backend
+from chronflow.backends.base import QueueBackend
+from chronflow.backends.memory import MemoryBackend
 from chronflow.config import SchedulerConfig, TaskMetrics
 
 
@@ -21,8 +24,12 @@ class TestSchedulerConfig:
         assert config.shutdown_timeout == 30.0
         assert config.enable_logging is True
         assert config.log_level == "INFO"
+        assert config.log_task_success is False
         assert config.timezone == "UTC"
         assert config.persistence_enabled is False
+        assert config.backend.name == "memory"
+        assert config.pid_file.name == "chronflow.pid"
+        assert config.process_name == "chronflow-scheduler"
 
     def test_custom_config(self):
         """测试自定义配置。"""
@@ -37,6 +44,87 @@ class TestSchedulerConfig:
         assert config.queue_size == 5000
         assert config.log_level == "DEBUG"
         assert config.timezone == "Asia/Shanghai"
+        assert isinstance(config.create_backend(), MemoryBackend)
+
+    def test_backend_from_string(self):
+        """测试字符串形式的后端声明。"""
+        config = SchedulerConfig(backend="memory")
+
+        assert config.backend.name == "memory"
+        backend = config.create_backend()
+        assert isinstance(backend, MemoryBackend)
+
+    def test_backend_from_mapping(self):
+        """测试映射形式的后端声明。"""
+        config = SchedulerConfig(backend={"name": "memory", "options": {"max_size": 42}})
+
+        backend = config.create_backend()
+        assert isinstance(backend, MemoryBackend)
+        assert backend.max_size == 42
+
+    def test_backend_alias_type(self):
+        """测试 type 字段映射为 name。"""
+        config = SchedulerConfig(backend={"type": "memory"})
+
+        assert config.backend.name == "memory"
+
+    def test_backend_invalid_input(self):
+        """测试非法后端配置。"""
+        with pytest.raises(ValueError):
+            SchedulerConfig(backend=123)
+
+    def test_backend_custom_registration(self):
+        """测试自定义后端注册与实例化。"""
+
+        class DummyBackend(QueueBackend):
+            def __init__(self, marker: str) -> None:
+                self.marker = marker
+
+            async def connect(self) -> None:
+                return None
+
+            async def disconnect(self) -> None:
+                return None
+
+            async def enqueue(
+                self,
+                task_id: str,
+                task_name: str,
+                scheduled_time,
+                payload: dict,
+                priority: int = 0,
+            ) -> None:
+                return None
+
+            async def dequeue(self, limit: int = 1) -> list[dict]:
+                return []
+
+            async def acknowledge(self, task_id: str) -> None:
+                return None
+
+            async def reject(self, task_id: str, requeue: bool = False) -> None:
+                return None
+
+            async def get_queue_size(self) -> int:
+                return 0
+
+            async def clear(self) -> None:
+                return None
+
+            async def health_check(self) -> bool:
+                return True
+
+        register_backend(
+            "dummy",
+            lambda **options: DummyBackend(**options),
+            override=True,
+        )
+
+        config = SchedulerConfig(backend={"name": "dummy", "options": {"marker": "ok"}})
+        backend = config.create_backend()
+
+        assert isinstance(backend, DummyBackend)
+        assert backend.marker == "ok"
 
     def test_invalid_timezone(self):
         """测试无效时区。"""

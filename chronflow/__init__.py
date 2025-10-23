@@ -13,6 +13,7 @@ chronflow - 高性能异步任务调度库,专为 Python 3.11+ 设计
 - 丰富的监控和任务管理功能
 """
 
+from chronflow.backends import create_backend, get_registered_backends, register_backend
 from chronflow.config import SchedulerConfig
 from chronflow.decorators import (
     cron,
@@ -37,7 +38,7 @@ from chronflow.retry import RetryPolicy
 from chronflow.scheduler import Scheduler
 from chronflow.task import Task, TaskConfig, TaskStatus
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"
 __all__ = [
     # 核心组件
     "Scheduler",
@@ -47,6 +48,10 @@ __all__ = [
     "SchedulerConfig",
     "RetryPolicy",
     "MetricsCollector",
+    # 后端注册
+    "register_backend",
+    "get_registered_backends",
+    "create_backend",
     # 装饰器
     "scheduled",
     "interval",

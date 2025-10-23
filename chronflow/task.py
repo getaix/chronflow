@@ -6,7 +6,7 @@ import asyncio
 import time
 import uuid
 from collections.abc import Callable, Coroutine
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from enum import Enum
 from typing import Any, ParamSpec, TypeVar
 
@@ -103,27 +103,65 @@ class TaskConfig(BaseModel):
         description="附加元数据",
     )
 
-    def get_next_run_time(self, after: datetime | None = None) -> datetime | None:
-        """根据调度计算下次运行时间。"""
-        now = after or datetime.now()
+    def get_next_run_time(
+        self, after: datetime | None = None, use_timezone: timezone | str | None = None
+    ) -> datetime | None:
+        """根据调度计算下次运行时间。
+
+        参数:
+            after: 参考时间点,默认使用当前时间
+            use_timezone: 使用的时区,可以是timezone对象、ZoneInfo字符串或None(使用UTC)
+
+        注意:
+            - 返回时区感知的datetime以确保与调度器的时间比较一致
+            - 如果传入的after无时区信息,会自动添加指定的时区
+        """
+        # 确定使用的时区
+        if use_timezone is None:
+            tz = timezone.utc
+        elif isinstance(use_timezone, str):
+            from zoneinfo import ZoneInfo
+
+            try:
+                tz = ZoneInfo(use_timezone)
+            except Exception:
+                tz = timezone.utc
+        else:
+            tz = use_timezone
+
+        if after is not None:
+            # 如果传入时间无时区信息,添加指定时区
+            now = after if after.tzinfo is not None else after.replace(tzinfo=tz)
+        else:
+            # 使用指定时区获取当前时间
+            now = datetime.now(tz)
 
         # 检查任务是否在时间范围内
-        if self.start_time and now < self.start_time:
-            return self.start_time
+        if self.start_time:
+            start = self.start_time if self.start_time.tzinfo is not None else self.start_time.replace(tzinfo=timezone.utc)
+            if now < start:
+                return start
 
-        if self.end_time and now >= self.end_time:
-            return None
+        if self.end_time:
+            end = self.end_time if self.end_time.tzinfo is not None else self.end_time.replace(tzinfo=timezone.utc)
+            if now >= end:
+                return None
 
         if self.schedule_type == ScheduleType.ONCE:
-            return self.start_time if self.start_time and self.start_time > now else None
+            if self.start_time:
+                start = self.start_time if self.start_time.tzinfo is not None else self.start_time.replace(tzinfo=timezone.utc)
+                return start if start > now else None
+            return None
 
         elif self.schedule_type == ScheduleType.INTERVAL:
             if self.interval_seconds is None:
                 raise ValueError("interval_seconds required for INTERVAL schedule")
 
             next_run = now + timedelta(seconds=self.interval_seconds)
-            if self.end_time and next_run > self.end_time:
-                return None
+            if self.end_time:
+                end = self.end_time if self.end_time.tzinfo is not None else self.end_time.replace(tzinfo=timezone.utc)
+                if next_run > end:
+                    return None
             return next_run
 
         elif self.schedule_type == ScheduleType.CRON:
@@ -133,8 +171,14 @@ class TaskConfig(BaseModel):
             cron = croniter(self.cron_expression, now)
             next_run = cron.get_next(datetime)
 
-            if self.end_time and next_run > self.end_time:
-                return None
+            # croniter可能返回无时区信息的datetime,确保添加时区
+            if next_run.tzinfo is None:
+                next_run = next_run.replace(tzinfo=timezone.utc)
+
+            if self.end_time:
+                end = self.end_time if self.end_time.tzinfo is not None else self.end_time.replace(tzinfo=timezone.utc)
+                if next_run > end:
+                    return None
             return next_run
 
         return None

@@ -75,5 +75,7 @@ site/
 .archive/
 
 .claude/
+.serena/
 .spec-workflow/
 CLAUDE.md
+AGENTS.md

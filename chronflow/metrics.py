@@ -177,6 +177,158 @@ class MetricsCollector:
 
         return "\n".join(lines)
 
+    def format_table(self, *, show_tasks: bool = True, max_tasks: int = 20) -> str:
+        """格式化指标为美观的表格展示。
+
+        参数:
+            show_tasks: 是否显示任务级别统计
+            max_tasks: 最多显示的任务数量
+
+        返回值:
+            格式化的表格字符串
+
+        示例:
+            ```python
+            print(collector.format_table())
+            ```
+        """
+        stats = self.get_stats()
+
+        # 构建总览表格
+        lines = [
+            "=" * 70,
+            "Chronflow 调度器指标总览".center(70),
+            "=" * 70,
+            "",
+            f"{'运行时间:':<20} {self._format_duration(stats['uptime_seconds'])}",
+            f"{'总执行次数:':<20} {stats['total_executions']:,}",
+            f"{'成功:':<20} {stats['successful_executions']:,}",
+            f"{'失败:':<20} {stats['failed_executions']:,}",
+            f"{'成功率:':<20} {stats['success_rate'] * 100:.2f}%",
+            f"{'平均执行时长:':<20} {stats['average_duration']:.4f}秒",
+            f"{'执行速率:':<20} {stats['executions_per_second']:.2f} 次/秒",
+            "",
+        ]
+
+        # 如果有任务统计且需要显示
+        if show_tasks and stats["task_stats"]:
+            lines.extend(
+                [
+                    "=" * 70,
+                    "任务执行统计".center(70),
+                    "=" * 70,
+                    "",
+                ]
+            )
+
+            # 表头
+            header = (
+                f"{'任务名':<20} {'次数':>8} {'成功':>8} {'失败':>8} "
+                f"{'成功率':>8} {'平均时长':>12}"
+            )
+            lines.append(header)
+            lines.append("-" * 70)
+
+            # 按执行次数排序任务
+            sorted_tasks = sorted(
+                stats["task_stats"].items(),
+                key=lambda x: x[1]["executions"],
+                reverse=True,
+            )[:max_tasks]
+
+            # 任务行
+            for task_name, task_stats in sorted_tasks:
+                # 截断过长的任务名
+                display_name = (
+                    task_name[:17] + "..." if len(task_name) > 20 else task_name
+                )
+
+                lines.append(
+                    f"{display_name:<20} "
+                    f"{task_stats['executions']:>8,} "
+                    f"{task_stats['successes']:>8,} "
+                    f"{task_stats['failures']:>8,} "
+                    f"{task_stats['success_rate'] * 100:>7.1f}% "
+                    f"{task_stats['average_duration']:>11.4f}秒"
+                )
+
+            if len(stats["task_stats"]) > max_tasks:
+                lines.append(
+                    f"... 还有 {len(stats['task_stats']) - max_tasks} 个任务未显示"
+                )
+
+        lines.append("=" * 70)
+        lines.append("")
+
+        return "\n".join(lines)
+
+    def format_task_detail(self, task_name: str) -> str:
+        """格式化单个任务的详细统计。
+
+        参数:
+            task_name: 任务名称
+
+        返回值:
+            格式化的详细统计字符串
+
+        抛出:
+            KeyError: 任务不存在
+        """
+        if task_name not in self.task_stats:
+            raise KeyError(f"任务 '{task_name}' 不存在")
+
+        stats = self.task_stats[task_name]
+        avg_duration = (
+            stats["total_duration"] / stats["executions"]
+            if stats["executions"] > 0
+            else 0.0
+        )
+        success_rate = (
+            stats["successes"] / stats["executions"] if stats["executions"] > 0 else 0.0
+        )
+
+        lines = [
+            "=" * 60,
+            f"任务 '{task_name}' 详细统计".center(60),
+            "=" * 60,
+            "",
+            f"{'总执行次数:':<20} {stats['executions']:,}",
+            f"{'成功次数:':<20} {stats['successes']:,}",
+            f"{'失败次数:':<20} {stats['failures']:,}",
+            f"{'成功率:':<20} {success_rate * 100:.2f}%",
+            "",
+            f"{'总执行时长:':<20} {self._format_duration(stats['total_duration'])}",
+            f"{'平均时长:':<20} {avg_duration:.4f}秒",
+            f"{'最短时长:':<20} {stats['min_duration']:.4f}秒",
+            f"{'最长时长:':<20} {stats['max_duration']:.4f}秒",
+            "",
+            "=" * 60,
+            "",
+        ]
+
+        return "\n".join(lines)
+
+    def _format_duration(self, seconds: float) -> str:
+        """格式化时长为人类可读形式。
+
+        参数:
+            seconds: 秒数
+
+        返回值:
+            格式化的时长字符串
+        """
+        if seconds < 60:
+            return f"{seconds:.2f}秒"
+        elif seconds < 3600:
+            minutes = seconds / 60
+            return f"{minutes:.2f}分钟"
+        elif seconds < 86400:
+            hours = seconds / 3600
+            return f"{hours:.2f}小时"
+        else:
+            days = seconds / 86400
+            return f"{days:.2f}天"
+
     def reset(self) -> None:
         """重置所有统计信息。"""
         self.total_executions = 0

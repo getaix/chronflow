@@ -1,7 +1,7 @@
 """队列后端测试。"""
 
 import tempfile
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 import pytest
@@ -30,7 +30,7 @@ class TestMemoryBackend:
         backend = MemoryBackend()
         await backend.connect()
 
-        now = datetime.now()
+        now = datetime.now(timezone.utc)
 
         await backend.enqueue(
             task_id="task1",
@@ -55,7 +55,7 @@ class TestMemoryBackend:
         backend = MemoryBackend()
         await backend.connect()
 
-        now = datetime.now()
+        now = datetime.now(timezone.utc)
         future = now + timedelta(seconds=10)
 
         # 添加未来的任务
@@ -93,7 +93,7 @@ class TestMemoryBackend:
         backend = MemoryBackend()
         await backend.connect()
 
-        now = datetime.now()
+        now = datetime.now(timezone.utc)
 
         # 添加不同优先级的任务
         await backend.enqueue(
@@ -139,7 +139,7 @@ class TestMemoryBackend:
         await backend.enqueue(
             task_id="task1",
             task_name="test",
-            scheduled_time=datetime.now(),
+            scheduled_time=datetime.now(timezone.utc),
             payload={},
             priority=0,
         )
@@ -161,7 +161,7 @@ class TestMemoryBackend:
         await backend.enqueue(
             task_id="task1",
             task_name="test",
-            scheduled_time=datetime.now(),
+            scheduled_time=datetime.now(timezone.utc),
             payload={},
             priority=0,
         )
@@ -182,7 +182,7 @@ class TestMemoryBackend:
 
         assert await backend.get_queue_size() == 0
 
-        now = datetime.now()
+        now = datetime.now(timezone.utc)
 
         await backend.enqueue(
             task_id="task1",
@@ -210,7 +210,7 @@ class TestMemoryBackend:
         backend = MemoryBackend()
         await backend.connect()
 
-        now = datetime.now()
+        now = datetime.now(timezone.utc)
 
         await backend.enqueue(
             task_id="task1",
@@ -242,7 +242,7 @@ class TestMemoryBackend:
         backend = MemoryBackend(max_size=2)
         await backend.connect()
 
-        now = datetime.now()
+        now = datetime.now(timezone.utc)
 
         await backend.enqueue(
             task_id="task1",
@@ -297,7 +297,7 @@ class TestSQLiteBackend:
 
             await backend.connect()
 
-            now = datetime.now()
+            now = datetime.now(timezone.utc)
 
             await backend.enqueue(
                 task_id="task1",
@@ -328,7 +328,7 @@ class TestSQLiteBackend:
             await backend1.enqueue(
                 task_id="task1",
                 task_name="test",
-                scheduled_time=datetime.now(),
+                scheduled_time=datetime.now(timezone.utc),
                 payload={"data": "test"},
                 priority=0,
             )
@@ -356,7 +356,7 @@ class TestSQLiteBackend:
             await backend.enqueue(
                 task_id="task1",
                 task_name="test",
-                scheduled_time=datetime.now(),
+                scheduled_time=datetime.now(timezone.utc),
                 payload={},
                 priority=0,
             )
@@ -382,7 +382,7 @@ class TestSQLiteBackend:
             await backend.enqueue(
                 task_id="task1",
                 task_name="test",
-                scheduled_time=datetime.now(),
+                scheduled_time=datetime.now(timezone.utc),
                 payload={},
                 priority=0,
             )
@@ -409,7 +409,7 @@ class TestSQLiteBackend:
             await backend.enqueue(
                 task_id="task1",
                 task_name="test",
-                scheduled_time=datetime.now(),
+                scheduled_time=datetime.now(timezone.utc),
                 payload={},
                 priority=0,
             )
@@ -435,7 +435,7 @@ class TestSQLiteBackend:
             await backend.enqueue(
                 task_id="task1",
                 task_name="test",
-                scheduled_time=datetime.now(),
+                scheduled_time=datetime.now(timezone.utc),
                 payload={"data": "test"},
                 priority=0,
             )
@@ -461,7 +461,7 @@ class TestSQLiteBackend:
                 await backend.enqueue(
                     task_id="task1",
                     task_name="test",
-                    scheduled_time=datetime.now(),
+                    scheduled_time=datetime.now(timezone.utc),
                     payload={},
                     priority=0,
                 )

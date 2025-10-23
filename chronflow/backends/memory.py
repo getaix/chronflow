@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import asyncio
 import heapq
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Any
 
 from chronflow.backends.base import QueueBackend
@@ -71,7 +71,7 @@ class MemoryBackend(QueueBackend):
     async def dequeue(self, limit: int = 1) -> list[dict[str, Any]]:
         """从队列中获取已就绪的任务。"""
         async with self._lock:
-            now = datetime.now()
+            now = datetime.now(timezone.utc)
             ready_tasks: list[dict[str, Any]] = []
 
             # 查看任务并收集就绪的任务

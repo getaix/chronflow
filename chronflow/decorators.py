@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import threading
 from collections.abc import Callable, Coroutine
 from datetime import datetime, timedelta
 from functools import wraps
@@ -14,17 +15,42 @@ P = ParamSpec("P")
 T = TypeVar("T")
 
 # 全局调度器引用(用于装饰器)
-_global_scheduler: Any = None
+_global_scheduler: Any | None = None
+_pending_tasks: list[Task] = []
+_scheduler_lock = threading.RLock()  # 可重入锁,保护全局状态
 
 
-def set_global_scheduler(scheduler: Any) -> None:
-    """设置全局调度器实例。
+def set_global_scheduler(scheduler: Any | None, *, clear_pending: bool = False) -> None:
+    """设置或清除全局调度器实例。
 
     参数:
         scheduler: 调度器实例
+        clear_pending: 在清除全局调度器时是否清空待注册任务
+
+    线程安全:
+        使用可重入锁保护全局状态,确保多线程环境下的安全性
     """
     global _global_scheduler
-    _global_scheduler = scheduler
+
+    with _scheduler_lock:
+        _global_scheduler = scheduler
+
+        if scheduler is None:
+            if clear_pending:
+                _pending_tasks.clear()
+            return
+
+        # 安全地转移待注册任务(在锁内复制列表)
+        tasks_to_register = list(_pending_tasks)
+        _pending_tasks.clear()
+
+    # 在锁外注册任务,避免在调度器注册时可能的死锁
+    for task in tasks_to_register:
+        try:
+            scheduler.register_task(task)
+        except ValueError:
+            # 如果名称冲突,跳过即可
+            continue
 
 
 def get_global_scheduler() -> Any:
@@ -35,12 +61,16 @@ def get_global_scheduler() -> Any:
 
     抛出:
         RuntimeError: 未设置全局调度器
+
+    线程安全:
+        使用锁保护读取操作,确保线程安全
     """
-    if _global_scheduler is None:
-        raise RuntimeError(
-            "未设置全局调度器。请先调用 set_global_scheduler() 或使用 Scheduler 实例"
-        )
-    return _global_scheduler
+    with _scheduler_lock:
+        if _global_scheduler is None:
+            raise RuntimeError(
+                "未设置全局调度器。请先调用 set_global_scheduler() 或使用 Scheduler 实例"
+            )
+        return _global_scheduler
 
 
 def scheduled(
@@ -125,13 +155,17 @@ def scheduled(
         # 创建任务实例
         task = Task(func=func, config=config)
 
-        # 自动注册到全局调度器(如果存在)
-        try:
-            scheduler = get_global_scheduler()
-            scheduler.register_task(task)
-        except RuntimeError:
-            # 全局调度器未设置,稍后手动注册
-            pass
+        # 自动注册到全局调度器(如果存在)- 需要锁保护
+        with _scheduler_lock:
+            if _global_scheduler is not None:
+                try:
+                    _global_scheduler.register_task(task)
+                except ValueError:
+                    # 任务名称冲突,跳过
+                    pass
+            else:
+                # 全局调度器未设置,记录为待注册任务
+                _pending_tasks.append(task)
 
         # 保存任务引用到函数属性
         func.__chronflow_task__ = task  # type: ignore

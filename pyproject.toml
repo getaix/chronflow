@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "chronflow"
-version = "0.1.0"
+version = "0.2.0"
 description = "A high-performance async task scheduler with cron support, retry mechanism, and configuration management"
 authors = [
     {name = "Your Name", email = "your.email@example.com"},

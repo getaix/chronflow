@@ -14,9 +14,18 @@ from chronflow.decorators import (
     once,
     scheduled,
     weekly,
+    set_global_scheduler,
 )
 from chronflow.retry import RetryPolicy
 from chronflow.task import ScheduleType
+
+
+@pytest.fixture(autouse=True)
+def reset_scheduler_state():
+    """在每个测试前后重置全局调度器状态。"""
+    set_global_scheduler(None, clear_pending=True)
+    yield
+    set_global_scheduler(None, clear_pending=True)
 
 
 class TestScheduledDecorator:
