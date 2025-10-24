@@ -38,7 +38,7 @@ from chronflow.retry import RetryPolicy
 from chronflow.scheduler import Scheduler
 from chronflow.task import Task, TaskConfig, TaskStatus
 
-__version__ = "0.2.0"
+__version__ = "0.2.1"
 __all__ = [
     # 核心组件
     "Scheduler",

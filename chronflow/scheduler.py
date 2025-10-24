@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import asyncio
+import os
+import signal
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 from datetime import datetime, timezone
@@ -148,6 +150,9 @@ class Scheduler:
 
         self._running = True
         self._shutdown_event.clear()
+
+        # 注册信号处理器(仅在非守护模式下)
+        self._setup_signal_handlers()
 
         # 连接后端
         await self.backend.connect()
@@ -309,7 +314,7 @@ class Scheduler:
             except asyncio.CancelledError:
                 break
             except Exception as e:
-                self._log.error("调度循环错误", error=str(e), exc_info=True)
+                self._log.exception("调度循环错误", error=str(e))
                 await asyncio.sleep(1)
 
         self._log.info("调度循环停止")
@@ -438,12 +443,11 @@ class Scheduler:
                             duration=execution_time,
                         )
 
-                    self._log.error(
+                    self._log.exception(
                         "任务执行失败",
                         task_name=task_name,
                         worker_id=worker_id,
                         error=str(e),
-                        exc_info=True,
                     )
 
             except asyncio.CancelledError:
@@ -453,7 +457,6 @@ class Scheduler:
                     "工作协程错误",
                     worker_id=worker_id,
                     error=str(e),
-                    exc_info=True,
                 )
                 await asyncio.sleep(1)
 
@@ -700,6 +703,25 @@ class Scheduler:
         if self.metrics_collector:
             self.metrics_collector.reset()
             self._log.info("性能指标已重置")
+
+    def _setup_signal_handlers(self) -> None:
+        """设置信号处理器以支持 Ctrl+C 优雅停止。
+
+        仅在非守护模式和非 Windows 系统下注册。
+        """
+        if os.name == "nt":  # Windows 不支持 SIGTERM
+            return
+
+        loop = asyncio.get_event_loop()
+
+        def signal_handler(signum: int) -> None:
+            """信号处理器回调函数。"""
+            self._log.info(f"收到信号 {signum},正在停止调度器...")
+            loop.call_soon_threadsafe(self._shutdown_event.set)
+
+        # 注册 SIGINT (Ctrl+C) 和 SIGTERM
+        signal.signal(signal.SIGINT, lambda s, f: signal_handler(s))
+        signal.signal(signal.SIGTERM, lambda s, f: signal_handler(s))
 
     def _get_daemon_controller(self) -> SchedulerDaemon:
         if self._daemon_controller is None:

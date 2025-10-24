@@ -161,11 +161,13 @@ def scheduled(
                 try:
                     _global_scheduler.register_task(task)
                 except ValueError:
-                    # 任务名称冲突,跳过
+                    # 任务名称冲突,跳过(说明已经注册过了)
                     pass
             else:
                 # 全局调度器未设置,记录为待注册任务
-                _pending_tasks.append(task)
+                # 检查是否已经在待注册列表中(避免重复)
+                if not any(t.config.name == task_name for t in _pending_tasks):
+                    _pending_tasks.append(task)
 
         # 保存任务引用到函数属性
         func.__chronflow_task__ = task  # type: ignore

@@ -127,6 +127,13 @@ class SchedulerDaemon:
 
         # 子进程分支: 独立会话,避免重新继承控制终端
         os.setsid()
+
+        # 重定向标准输入/输出/错误到 /dev/null,避免输出到终端
+        import sys
+        sys.stdin = open(os.devnull, "r")
+        sys.stdout = open(os.devnull, "w")
+        sys.stderr = open(os.devnull, "w")
+
         self._run_daemon_process()
         os._exit(0)  # pragma: no cover - 子进程退出点
 

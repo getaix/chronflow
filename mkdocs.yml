@@ -37,6 +37,7 @@ nav:
   - 概览: index.md
   - 快速开始: quickstart.md
   - 使用指南:
+      - 集成指南: guides/integration.md
       - 日志系统: guides/logging.md
       - 监控与统计: guides/monitoring.md
       - 性能指标: guides/metrics.md
@@ -85,17 +86,10 @@ markdown_extensions:
       pygments_lang_class: true
   - pymdownx.inlinehilite
   - pymdownx.snippets
-  - pymdownx.superfences:
-      custom_fences:
-        - name: mermaid
-          class: mermaid
-          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.superfences
   - pymdownx.tabbed:
       alternate_style: true
   - pymdownx.details
-  - pymdownx.emoji:
-      emoji_index: !!python/name:material.extensions.emoji.twemoji
-      emoji_generator: !!python/name:material.extensions.emoji.to_svg
   - attr_list
   - md_in_html
 

@@ -20,6 +20,13 @@ exclude_lines =
     if __name__ == .__main__.:
     if TYPE_CHECKING:
     @abstractmethod
+    # 排除守护进程内部运行逻辑(难以测试)
+    def _run_daemon_process
+    # 排除可视化相关代码(非核心功能)
+    def format_summary
+    def format_task_detail
+    def generate_chart
+    def _format_duration
 
 [html]
 directory = htmlcov

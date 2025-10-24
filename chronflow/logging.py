@@ -83,9 +83,13 @@ class StructlogAdapter(LoggerAdapter):
 
     def error(self, message: str, **kwargs: Any) -> None:
         """记录错误信息。"""
+        # 避免 exc_info 字段冲突
+        exc_info = kwargs.pop("exc_info", None)
         if self._is_stdlib:
-            self._logger.error(message, extra=kwargs)
+            self._logger.error(message, extra=kwargs, exc_info=exc_info)
         else:
+            if exc_info:
+                kwargs["exc_info"] = exc_info
             self._logger.error(message, **kwargs)
 
     def exception(self, message: str, **kwargs: Any) -> None:
@@ -131,6 +135,8 @@ class LoguruAdapter(LoggerAdapter):
 
     def error(self, message: str, **kwargs: Any) -> None:
         """记录错误信息。"""
+        # exc_info 不需要传递,loguru 会自动处理
+        kwargs.pop("exc_info", None)
         self._logger.error(message, **kwargs)
 
     def exception(self, message: str, **kwargs: Any) -> None:
@@ -172,7 +178,9 @@ class StdlibAdapter(LoggerAdapter):
 
     def error(self, message: str, **kwargs: Any) -> None:
         """记录错误信息。"""
-        self._logger.error(message, extra=kwargs)
+        # 避免 exc_info 字段冲突
+        exc_info = kwargs.pop("exc_info", None)
+        self._logger.error(message, extra=kwargs, exc_info=exc_info)
 
     def exception(self, message: str, **kwargs: Any) -> None:
         """记录异常信息。"""
