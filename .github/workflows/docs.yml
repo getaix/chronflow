@@ -26,12 +26,16 @@ jobs:
           python-version: '3.12'
       - name: Configure Pages
         uses: actions/configure-pages@v4
-      - name: Install uv and docs deps
+      - name: Install uv
+        run: curl -LsSf https://astral.sh/uv/install.sh | sh
+      - name: Install docs dependencies
         run: |
-          curl -LsSf https://astral.sh/uv/install.sh | sh
+          export PATH="$HOME/.cargo/bin:$PATH"
           uv pip install --system mkdocs mkdocs-material mkdocstrings[python] pymdown-extensions
       - name: Install package with all extras
-        run: uv pip install --system -e '.[all]'
+        run: |
+          export PATH="$HOME/.cargo/bin:$PATH"
+          uv pip install --system -e '.[all]'
       - name: Build site
         run: mkdocs build
       - name: Upload Pages artifact
