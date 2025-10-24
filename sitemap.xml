@@ -2,66 +2,74 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://getaix.github.io/chronflow/</loc>
-         <lastmod>2025-10-22</lastmod>
+         <lastmod>2025-10-24</lastmod>
     </url>
     <url>
          <loc>https://getaix.github.io/chronflow/changelog/</loc>
-         <lastmod>2025-10-22</lastmod>
+         <lastmod>2025-10-24</lastmod>
     </url>
     <url>
          <loc>https://getaix.github.io/chronflow/contributing/</loc>
-         <lastmod>2025-10-22</lastmod>
+         <lastmod>2025-10-24</lastmod>
     </url>
     <url>
          <loc>https://getaix.github.io/chronflow/quickstart/</loc>
-         <lastmod>2025-10-22</lastmod>
+         <lastmod>2025-10-24</lastmod>
     </url>
     <url>
          <loc>https://getaix.github.io/chronflow/api/backends/</loc>
-         <lastmod>2025-10-22</lastmod>
+         <lastmod>2025-10-24</lastmod>
     </url>
     <url>
          <loc>https://getaix.github.io/chronflow/api/config/</loc>
-         <lastmod>2025-10-22</lastmod>
+         <lastmod>2025-10-24</lastmod>
     </url>
     <url>
          <loc>https://getaix.github.io/chronflow/api/decorators/</loc>
-         <lastmod>2025-10-22</lastmod>
+         <lastmod>2025-10-24</lastmod>
     </url>
     <url>
          <loc>https://getaix.github.io/chronflow/api/logging/</loc>
-         <lastmod>2025-10-22</lastmod>
+         <lastmod>2025-10-24</lastmod>
     </url>
     <url>
          <loc>https://getaix.github.io/chronflow/api/metrics/</loc>
-         <lastmod>2025-10-22</lastmod>
+         <lastmod>2025-10-24</lastmod>
     </url>
     <url>
          <loc>https://getaix.github.io/chronflow/api/retry/</loc>
-         <lastmod>2025-10-22</lastmod>
+         <lastmod>2025-10-24</lastmod>
     </url>
     <url>
          <loc>https://getaix.github.io/chronflow/api/scheduler/</loc>
-         <lastmod>2025-10-22</lastmod>
+         <lastmod>2025-10-24</lastmod>
     </url>
     <url>
          <loc>https://getaix.github.io/chronflow/api/task/</loc>
-         <lastmod>2025-10-22</lastmod>
+         <lastmod>2025-10-24</lastmod>
     </url>
     <url>
          <loc>https://getaix.github.io/chronflow/guides/backends/</loc>
-         <lastmod>2025-10-22</lastmod>
+         <lastmod>2025-10-24</lastmod>
+    </url>
+    <url>
+         <loc>https://getaix.github.io/chronflow/guides/integration/</loc>
+         <lastmod>2025-10-24</lastmod>
     </url>
     <url>
          <loc>https://getaix.github.io/chronflow/guides/logging/</loc>
-         <lastmod>2025-10-22</lastmod>
+         <lastmod>2025-10-24</lastmod>
     </url>
     <url>
          <loc>https://getaix.github.io/chronflow/guides/metrics/</loc>
-         <lastmod>2025-10-22</lastmod>
+         <lastmod>2025-10-24</lastmod>
     </url>
     <url>
          <loc>https://getaix.github.io/chronflow/guides/monitoring/</loc>
-         <lastmod>2025-10-22</lastmod>
+         <lastmod>2025-10-24</lastmod>
+    </url>
+    <url>
+         <loc>https://getaix.github.io/chronflow/guides/task_discovery/</loc>
+         <lastmod>2025-10-24</lastmod>
     </url>
 </urlset>
