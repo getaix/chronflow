@@ -38,6 +38,7 @@ nav:
   - 快速开始: quickstart.md
   - 使用指南:
       - 集成指南: guides/integration.md
+      - 任务自动发现: guides/task_discovery.md
       - 日志系统: guides/logging.md
       - 监控与统计: guides/monitoring.md
       - 性能指标: guides/metrics.md

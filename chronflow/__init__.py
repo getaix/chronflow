@@ -26,6 +26,7 @@ from chronflow.decorators import (
     scheduled,
     weekly,
 )
+from chronflow.discovery import TaskDiscovery
 from chronflow.logging import (
     LoggerAdapter,
     LoguruAdapter,
@@ -38,7 +39,7 @@ from chronflow.retry import RetryPolicy
 from chronflow.scheduler import Scheduler
 from chronflow.task import Task, TaskConfig, TaskStatus
 
-__version__ = "0.2.1"
+__version__ = "0.3.0"
 __all__ = [
     # 核心组件
     "Scheduler",
@@ -48,6 +49,7 @@ __all__ = [
     "SchedulerConfig",
     "RetryPolicy",
     "MetricsCollector",
+    "TaskDiscovery",
     # 后端注册
     "register_backend",
     "get_registered_backends",

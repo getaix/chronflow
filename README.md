@@ -12,6 +12,7 @@
 - **多种后端** - 支持内存、Redis、RabbitMQ、SQLite 作为队列后端
 - **重试机制** - 内置智能重试,支持指数退避策略
 - **简洁 API** - 装饰器模式,一行代码即可定义任务
+- **自动发现** - 自动扫描目录或包,发现并注册任务
 - **类型安全** - 完整的类型提示,IDE 友好
 - **配置灵活** - 支持代码配置、文件配置(JSON/TOML/YAML)
 - **后台运行** - 支持守护进程模式,优雅关闭
@@ -113,6 +114,39 @@ scheduler = Scheduler(backend=backend)
 async def sync_task():
     print("同步数据...")
     await sync_data()
+
+asyncio.run(scheduler.start())
+```
+
+### 任务自动发现
+
+适合模块化项目,自动扫描并注册任务:
+
+```python
+from chronflow import Scheduler
+
+scheduler = Scheduler()
+
+# 自动发现并注册目录下所有任务
+# 项目结构:
+# app/
+#   modules/
+#     user/task.py
+#     email/task.py
+#     report/task.py
+
+tasks = scheduler.discover_tasks_from_directory("app/modules")
+print(f"自动发现并注册了 {len(tasks)} 个任务")
+
+# 使用自定义文件名模式
+tasks = scheduler.discover_tasks_from_directory(
+    "app",
+    pattern="*_tasks.py",
+    exclude_patterns=["test_*.py"]
+)
+
+# 从包中发现
+tasks = scheduler.discover_tasks_from_package("my_app.tasks")
 
 asyncio.run(scheduler.start())
 ```

@@ -168,7 +168,9 @@ class TaskConfig(BaseModel):
             if self.cron_expression is None:
                 raise ValueError("cron_expression required for CRON schedule")
 
-            cron = croniter(self.cron_expression, now)
+            # chronflow 支持秒级精度的 6 段式 Cron 表达式: 秒 分 时 日 月 周
+            # 使用 second_at_beginning=True 启用秒级支持
+            cron = croniter(self.cron_expression, now, second_at_beginning=True)
             next_run = cron.get_next(datetime)
 
             # croniter可能返回无时区信息的datetime,确保添加时区

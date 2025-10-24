@@ -2,9 +2,9 @@
 
 chronflow 是一个高性能的 Python 异步定时任务调度库，专为 Python 3.11+ 设计。它提供了简洁的装饰器 API、多种队列后端支持、智能重试机制以及完整的类型安全保障。
 
-[![版本](https://img.shields.io/badge/version-0.2.1-blue.svg)](https://github.com/getaix/chronflow/releases/tag/v0.2.1)
+[![版本](https://img.shields.io/badge/version-0.3.0-blue.svg)](https://github.com/getaix/chronflow/releases/tag/v0.3.0)
 [![Python](https://img.shields.io/badge/python-3.11+-brightgreen.svg)](https://www.python.org/)
-[![测试覆盖率](https://img.shields.io/badge/coverage-91%25-brightgreen.svg)](./changelog.md#021---2025-10-24)
+[![测试覆盖率](https://img.shields.io/badge/coverage-91%25-brightgreen.svg)](./changelog.md#030-2025-10-24)
 [![许可证](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/getaix/chronflow/blob/main/LICENSE)
 
 - 基于 asyncio 的原生异步支持，高并发、低延迟
@@ -14,8 +14,8 @@ chronflow 是一个高性能的 Python 异步定时任务调度库，专为 Pyth
 - 完整的类型提示，IDE 友好
 - 零依赖启动，可选外部服务支持
 
-!!! info "最新版本: v0.2.1"
-    2025-10-24 发布 - 修复信号处理、日志系统、任务重复执行等关键问题 | [查看更新日志](./changelog.md#021-2025-10-24)
+!!! info "最新版本: v0.3.0"
+    2025-10-24 发布 - 新增任务自动发现功能,修复 Cron 秒级精度支持 | [查看更新日志](./changelog.md#030-2025-10-24)
 
 > 环境要求：Python >= 3.11
 

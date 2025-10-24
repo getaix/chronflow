@@ -292,6 +292,6 @@ print(json_metrics)
 
 ## 下一步
 
-- 查看 [示例代码](../../../examples/metrics_example.py)
+- 查看 [示例代码](../../examples/metrics_example.py)
 - 了解 [日志系统](logging.md)
 - 了解 [监控与统计](monitoring.md)

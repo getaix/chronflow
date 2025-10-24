@@ -19,6 +19,13 @@ from chronflow.logging import LoggerAdapter, get_default_logger
 from chronflow.metrics import MetricsCollector
 from chronflow.task import Task, TaskStatus
 
+# 延迟导入避免循环依赖
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from pathlib import Path
+    from chronflow.discovery import TaskDiscovery
+
 
 class Scheduler:
     """高性能异步任务调度器。
@@ -72,6 +79,9 @@ class Scheduler:
 
         # 配置指标收集
         self.metrics_collector = MetricsCollector() if enable_metrics else None
+
+        # 任务发现器(延迟初始化)
+        self._discovery: TaskDiscovery | None = None
 
         if use_global_scheduler:
             set_global_scheduler(self)
@@ -703,6 +713,113 @@ class Scheduler:
         if self.metrics_collector:
             self.metrics_collector.reset()
             self._log.info("性能指标已重置")
+
+    def discover_tasks_from_directory(
+        self,
+        directory: str | Path,
+        *,
+        pattern: str = "task.py",
+        recursive: bool = True,
+        exclude_patterns: list[str] | None = None,
+    ) -> list[Task]:
+        """从目录自动发现并注册任务。
+
+        参数:
+            directory: 要扫描的目录路径
+            pattern: 文件名匹配模式,支持通配符 (默认: "task.py")
+            recursive: 是否递归扫描子目录 (默认: True)
+            exclude_patterns: 排除的文件名模式列表
+
+        返回值:
+            发现并注册的任务列表
+
+        示例:
+            # 扫描所有 task.py 文件
+            scheduler.discover_tasks_from_directory("my_app/modules")
+
+            # 扫描所有 *_tasks.py 文件
+            scheduler.discover_tasks_from_directory(
+                "my_app",
+                pattern="*_tasks.py",
+                exclude_patterns=["test_*.py"]
+            )
+        """
+        discovery = self._get_discovery()
+        return discovery.discover_from_directory(
+            directory,
+            pattern=pattern,
+            recursive=recursive,
+            exclude_patterns=exclude_patterns,
+            auto_register=True,
+        )
+
+    def discover_tasks_from_package(
+        self,
+        package_name: str,
+        *,
+        pattern: str = "task.py",
+        exclude_patterns: list[str] | None = None,
+    ) -> list[Task]:
+        """从包自动发现并注册任务。
+
+        参数:
+            package_name: 包名 (例如: "my_app.tasks")
+            pattern: 文件名匹配模式
+            exclude_patterns: 排除的文件名模式列表
+
+        返回值:
+            发现并注册的任务列表
+
+        示例:
+            # 扫描包及其子包
+            scheduler.discover_tasks_from_package("my_app.tasks")
+
+            # 扫描特定模式的文件
+            scheduler.discover_tasks_from_package(
+                "my_app",
+                pattern="*_tasks.py"
+            )
+        """
+        discovery = self._get_discovery()
+        return discovery.discover_from_package(
+            package_name,
+            pattern=pattern,
+            exclude_patterns=exclude_patterns,
+            auto_register=True,
+        )
+
+    def discover_tasks_from_modules(
+        self,
+        module_names: list[str],
+    ) -> list[Task]:
+        """从指定的模块列表中发现并注册任务。
+
+        参数:
+            module_names: 模块名列表 (例如: ["app.tasks.user", "app.tasks.email"])
+
+        返回值:
+            发现并注册的任务列表
+
+        示例:
+            scheduler.discover_tasks_from_modules([
+                "my_app.tasks.user_tasks",
+                "my_app.tasks.email_tasks",
+            ])
+        """
+        discovery = self._get_discovery()
+        return discovery.discover_from_modules(module_names, auto_register=True)
+
+    def _get_discovery(self) -> TaskDiscovery:
+        """获取或创建任务发现器实例。
+
+        返回值:
+            任务发现器实例
+        """
+        if self._discovery is None:
+            from chronflow.discovery import TaskDiscovery
+
+            self._discovery = TaskDiscovery(self)
+        return self._discovery
 
     def _setup_signal_handlers(self) -> None:
         """设置信号处理器以支持 Ctrl+C 优雅停止。

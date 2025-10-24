@@ -5,6 +5,57 @@
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/),
 版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [0.3.0] - 2025-10-24
+
+### 新增 ✨
+
+#### 任务自动发现功能
+- 🔍 添加 `TaskDiscovery` 类,支持自动扫描和注册定时任务
+- 📁 支持按目录扫描 - `discover_tasks_from_directory()`
+- 📦 支持按包名扫描 - `discover_tasks_from_package()`
+- 📝 支持模块列表导入 - `discover_tasks_from_modules()`
+- 🎯 支持通配符文件名匹配 (如 `task.py`, `*_tasks.py`)
+- ♻️ 支持递归扫描子目录
+- 🚫 支持排除特定文件模式
+- ✅ 自动注册发现的任务到调度器
+- 🛡️ 错误容错,导入失败的模块会被跳过
+
+#### Scheduler 集成
+- 添加 `discover_tasks_from_directory()` 便捷方法
+- 添加 `discover_tasks_from_package()` 便捷方法
+- 添加 `discover_tasks_from_modules()` 便捷方法
+
+### 修复 🐛
+
+- 🔧 修复 Cron 表达式秒级精度支持问题
+  - 在 `croniter` 调用中添加 `second_at_beginning=True` 参数
+  - 确保 6 段式 Cron 表达式正常工作 (`秒 分 时 日 月 周`)
+  - 修复 `@daily()`, `@hourly()`, `@weekly()`, `@monthly()` 装饰器
+
+### 改进 🔧
+
+- 📚 更新 MkDocs 配置,添加任务自动发现文档
+- 📝 添加详细的任务自动发现使用文档和示例
+- 🎯 优化项目集成示例,添加短间隔任务演示
+
+### 示例
+
+- 添加 `examples/task_discovery_example.py` - 任务自动发现基础示例
+- 添加 `examples/project_integration_example.py` - 实际项目集成示例
+
+### 文档
+
+- 添加 `docs/task_discovery.md` - 任务自动发现完整文档
+- 更新 `README.md` 添加自动发现功能介绍
+- 添加 `TASK_DISCOVERY_SUMMARY.md` - 功能实现总结
+
+### 测试
+
+- 添加 `tests/test_discovery.py` - 13 个测试用例,覆盖所有发现功能
+- ✅ 所有 301 个测试通过
+
+---
+
 ## [0.1.0] - 2025-10-22
 
 ### 新增 ✨
