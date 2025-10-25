@@ -3,8 +3,8 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "chronflow"
-version = "0.3.0"
+name = "symphra-scheduler"
+version = "1.0.0"
 description = "A high-performance async task scheduler with cron support, auto-discovery, retry mechanism, and configuration management"
 authors = [
     {name = "getaix", email = "develop@getaix.tech"},
@@ -50,6 +50,7 @@ docs = [
     "mkdocs>=1.5.0",
     "mkdocs-material>=9.5.0",
     "mkdocstrings[python]>=0.24.0",
+    "mkdocs-static-i18n>=0.51.0",
     "pymdown-extensions>=10.7.0",
 ]
 structlog = [
@@ -76,14 +77,15 @@ all = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/getaix/chronflow"
-Documentation = "https://getaix.github.io/chronflow"
-Repository = "https://github.com/getaix/chronflow"
-Issues = "https://github.com/getaix/chronflow/issues"
-Changelog = "https://getaix.github.io/chronflow/changelog/"
+Homepage = "https://github.com/getaix/symphra-scheduler"
+Documentation = "https://getaix.github.io/symphra-scheduler"
+Repository = "https://github.com/getaix/symphra-scheduler"
+Issues = "https://github.com/getaix/symphra-scheduler/issues"
+Changelog = "https://getaix.github.io/symphra-scheduler/changelog/"
 
 [tool.hatch.build.targets.wheel]
-packages = ["chronflow"]
+sources = ["src"]
+packages = ["symphra_scheduler"]
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"

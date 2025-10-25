@@ -5,10 +5,9 @@
 
 import asyncio
 
-from chronflow import Scheduler, SchedulerConfig
-from chronflow.decorators import interval, set_global_scheduler
-from chronflow.metrics import MetricsCollector
-
+from symphra_scheduler import Scheduler, SchedulerConfig
+from symphra_scheduler.decorators import interval, set_global_scheduler
+from symphra_scheduler.metrics import MetricsCollector
 
 # 创建指标收集器
 collector = MetricsCollector()
@@ -78,25 +77,13 @@ async def main():
             )
 
     # 显示表格格式的指标
-    print("\n" + "=" * 70)
-    print("方式1: 完整表格展示".center(70))
-    print("=" * 70)
-    print(collector.format_table())
 
     # 显示单个任务详情
-    print("\n" + "=" * 70)
-    print("方式2: 单任务详细统计".center(70))
-    print("=" * 70)
     if "fast_task" in collector.task_stats:
-        print(collector.format_task_detail("fast_task"))
+        pass
 
     # 显示 JSON 格式
-    print("\n" + "=" * 70)
-    print("方式3: JSON 格式".center(70))
-    print("=" * 70)
-    import json
 
-    print(json.dumps(collector.get_stats(), indent=2, ensure_ascii=False))
 
 
 if __name__ == "__main__":

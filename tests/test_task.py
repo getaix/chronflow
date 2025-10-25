@@ -1,12 +1,12 @@
 """任务模块测试。"""
 
 import asyncio
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 
 import pytest
 
-from chronflow.retry import RetryPolicy
-from chronflow.task import ScheduleType, Task, TaskConfig, TaskStatus
+from symphra_scheduler.retry import RetryPolicy
+from symphra_scheduler.task import ScheduleType, Task, TaskConfig, TaskStatus
 
 
 class TestTaskConfig:
@@ -39,7 +39,7 @@ class TestTaskConfig:
 
     def test_once_task_config(self):
         """测试一次性任务配置。"""
-        start_time = datetime.now(timezone.utc) + timedelta(hours=1)
+        start_time = datetime.now(UTC) + timedelta(hours=1)
 
         config = TaskConfig(
             name="once_task",
@@ -59,7 +59,7 @@ class TestTaskConfig:
             interval_seconds=10.0,
         )
 
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         next_run = config.get_next_run_time(after=now)
 
         assert next_run is not None
@@ -74,7 +74,7 @@ class TestTaskConfig:
             cron_expression="0 0 * * * *",  # 每小时整点
         )
 
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         next_run = config.get_next_run_time(after=now)
 
         assert next_run is not None
@@ -84,7 +84,7 @@ class TestTaskConfig:
 
     def test_get_next_run_time_once_future(self):
         """测试未来一次性任务的下次运行时间。"""
-        future_time = datetime.now(timezone.utc) + timedelta(hours=1)
+        future_time = datetime.now(UTC) + timedelta(hours=1)
 
         config = TaskConfig(
             name="test",
@@ -98,7 +98,7 @@ class TestTaskConfig:
 
     def test_get_next_run_time_once_past(self):
         """测试过去一次性任务的下次运行时间。"""
-        past_time = datetime.now(timezone.utc) - timedelta(hours=1)
+        past_time = datetime.now(UTC) - timedelta(hours=1)
 
         config = TaskConfig(
             name="test",
@@ -112,7 +112,7 @@ class TestTaskConfig:
 
     def test_get_next_run_time_with_end_time(self):
         """测试带结束时间的任务。"""
-        end_time = datetime.now(timezone.utc) - timedelta(hours=1)
+        end_time = datetime.now(UTC) - timedelta(hours=1)
 
         config = TaskConfig(
             name="test",
@@ -128,7 +128,7 @@ class TestTaskConfig:
     def test_get_next_run_time_interval_exceeds_end_time(self):
         """测试间隔任务超过结束时间。"""
         # 设置结束时间为当前时间后 5 秒
-        end_time = datetime.now(timezone.utc) + timedelta(seconds=5)
+        end_time = datetime.now(UTC) + timedelta(seconds=5)
 
         config = TaskConfig(
             name="test",
@@ -146,7 +146,7 @@ class TestTaskConfig:
     def test_get_next_run_time_cron_exceeds_end_time(self):
         """测试 Cron 任务超过结束时间。"""
         # 设置结束时间为当前时间后 30 秒
-        end_time = datetime.now(timezone.utc) + timedelta(seconds=30)
+        end_time = datetime.now(UTC) + timedelta(seconds=30)
 
         config = TaskConfig(
             name="test",

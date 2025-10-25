@@ -7,10 +7,10 @@
 
 import asyncio
 
-from chronflow import Scheduler, SchedulerConfig, cron, interval
+from symphra_scheduler import Scheduler, SchedulerConfig, cron, interval
 
 try:
-    from chronflow.backends import RedisBackend
+    from symphra_scheduler.backends import RedisBackend
 except ImportError:
     exit(1)
 
@@ -18,7 +18,7 @@ except ImportError:
 # 配置 Redis 后端
 redis_backend = RedisBackend(
     url="redis://localhost:6379/0",
-    queue_name="chronflow:demo",
+    queue_name="symphra_scheduler:demo",
     max_connections=10,
 )
 

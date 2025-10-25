@@ -1,8 +1,8 @@
-site_name: chronflow
+site_name: Symphra Scheduler
 site_description: 高性能异步定时任务调度库
-site_url: https://getaix.github.io/chronflow
-site_author: chronflow Contributors
-repo_url: https://github.com/getaix/chronflow
+site_url: https://getaix.github.io/symphra-scheduler
+site_author: Symphra Scheduler Contributors
+repo_url: https://github.com/getaix/symphra-scheduler
 
 theme:
   name: material
@@ -60,11 +60,47 @@ plugins:
       lang:
         - zh
         - en
+  - autorefs:
+      resolve_closest: true
+  - i18n:
+      docs_structure: folder
+      fallback_to_default: true
+      languages:
+        - locale: zh
+          name: 简体中文
+          default: true
+          build: true
+        - locale: en
+          name: English
+          build: true
+          theme:
+            language: en
+          nav:
+            - Overview: index.md
+            - Quickstart: quickstart.md
+            - Guides:
+                - Integration: guides/integration.md
+                - Task Discovery: guides/task_discovery.md
+                - Logging: guides/logging.md
+                - Monitoring: guides/monitoring.md
+                - Metrics: guides/metrics.md
+                - Queue Backends: guides/backends.md
+            - API Reference:
+                - Scheduler: api/scheduler.md
+                - Task: api/task.md
+                - Config: api/config.md
+                - Decorators: api/decorators.md
+                - Retry: api/retry.md
+                - Logging: api/logging.md
+                - Metrics: api/metrics.md
+                - Backends: api/backends.md
+            - Changelog: changelog.md
+            - Contributing: contributing.md
   - mkdocstrings:
       handlers:
         python:
           paths:
-            - .
+            - src
           options:
             show_source: false
             heading_level: 2
@@ -97,6 +133,6 @@ markdown_extensions:
 extra:
   social:
     - icon: fontawesome/brands/github
-      link: https://github.com/getaix/chronflow
+      link: https://github.com/getaix/symphra-scheduler
   version:
     provider: mike

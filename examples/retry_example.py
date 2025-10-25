@@ -3,7 +3,7 @@
 import asyncio
 import random
 
-from chronflow import RetryPolicy, Scheduler, interval
+from symphra_scheduler import RetryPolicy, Scheduler, interval
 
 scheduler = Scheduler()
 

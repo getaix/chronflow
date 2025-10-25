@@ -2,13 +2,13 @@
 
 import pytest
 
-from chronflow.backends import (
+from symphra_scheduler.backends import (
     create_backend,
     get_registered_backends,
     register_backend,
 )
-from chronflow.backends.base import QueueBackend
-from chronflow.backends.memory import MemoryBackend
+from symphra_scheduler.backends.base import QueueBackend
+from symphra_scheduler.backends.memory import MemoryBackend
 
 
 class DummyBackend(QueueBackend):
@@ -159,14 +159,14 @@ class TestBackendRegistry:
         """测试创建 SQLite 后端。"""
         backend = create_backend("sqlite", db_path=":memory:")
 
-        from chronflow.backends.sqlite_backend import SQLiteBackend
+        from symphra_scheduler.backends.sqlite_backend import SQLiteBackend
 
         assert isinstance(backend, SQLiteBackend)
 
     def test_lazy_backend_import_error(self):
         """测试延迟加载后端依赖缺失时的错误处理。"""
         # 注册一个引用不存在模块的延迟后端
-        from chronflow.backends import _lazy_backend
+        from symphra_scheduler.backends import _lazy_backend
 
         register_backend(
             "test_missing_dep",

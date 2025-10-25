@@ -9,8 +9,8 @@
 
 import asyncio
 
-from chronflow import Scheduler, SchedulerConfig, interval
-from chronflow.backends import SQLiteBackend
+from symphra_scheduler import Scheduler, SchedulerConfig, interval
+from symphra_scheduler.backends import SQLiteBackend
 
 # 创建 SQLite 后端
 sqlite_backend = SQLiteBackend(

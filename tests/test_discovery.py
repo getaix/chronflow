@@ -1,12 +1,10 @@
 """任务自动发现功能测试。"""
 
-import asyncio
-from pathlib import Path
 
 import pytest
 
-from chronflow import Scheduler, cron, interval
-from chronflow.discovery import TaskDiscovery
+from symphra_scheduler import Scheduler
+from symphra_scheduler.discovery import TaskDiscovery
 
 
 @pytest.fixture
@@ -34,7 +32,7 @@ class TestTaskDiscovery:
 
     def test_pattern_to_regex(self):
         """测试通配符模式转换为正则表达式。"""
-        from chronflow.discovery import TaskDiscovery
+        from symphra_scheduler.discovery import TaskDiscovery
 
         # 测试精确匹配
         pattern = TaskDiscovery._pattern_to_regex("task.py")
@@ -67,7 +65,7 @@ class TestTaskDiscovery:
         # 创建任务文件
         task_file = temp_task_dir / "task.py"
         task_file.write_text('''
-from chronflow import interval
+from symphra_scheduler import interval
 
 @interval(10)
 async def test_task():
@@ -90,7 +88,7 @@ async def test_task():
         """测试从多个文件发现任务。"""
         # 创建多个任务文件
         (temp_task_dir / "user_tasks.py").write_text('''
-from chronflow import interval
+from symphra_scheduler import interval
 
 @interval(10)
 async def user_task_1():
@@ -102,7 +100,7 @@ async def user_task_2():
 ''')
 
         (temp_task_dir / "email_tasks.py").write_text('''
-from chronflow import cron
+from symphra_scheduler import cron
 
 @cron("*/5 * * * * *")
 async def email_task():
@@ -127,7 +125,7 @@ async def email_task():
         module1_dir = temp_task_dir / "module1"
         module1_dir.mkdir()
         (module1_dir / "task.py").write_text('''
-from chronflow import interval
+from symphra_scheduler import interval
 
 @interval(10)
 async def module1_task():
@@ -137,7 +135,7 @@ async def module1_task():
         module2_dir = temp_task_dir / "module2"
         module2_dir.mkdir()
         (module2_dir / "task.py").write_text('''
-from chronflow import interval
+from symphra_scheduler import interval
 
 @interval(10)
 async def module2_task():
@@ -161,7 +159,7 @@ async def module2_task():
         """测试排除模式。"""
         # 创建多个文件
         (temp_task_dir / "task.py").write_text('''
-from chronflow import interval
+from symphra_scheduler import interval
 
 @interval(10)
 async def production_task():
@@ -169,7 +167,7 @@ async def production_task():
 ''')
 
         (temp_task_dir / "test_task.py").write_text('''
-from chronflow import interval
+from symphra_scheduler import interval
 
 @interval(10)
 async def test_task():
@@ -177,7 +175,7 @@ async def test_task():
 ''')
 
         (temp_task_dir / "task_backup.py").write_text('''
-from chronflow import interval
+from symphra_scheduler import interval
 
 @interval(10)
 async def backup_task():
@@ -214,7 +212,7 @@ async def backup_task():
         """测试自动注册功能。"""
         # 创建任务文件
         (temp_task_dir / "task.py").write_text('''
-from chronflow import interval
+from symphra_scheduler import interval
 
 @interval(10)
 async def auto_registered_task():
@@ -235,7 +233,7 @@ async def auto_registered_task():
     def test_discover_multiple_decorators(self, scheduler, temp_task_dir):
         """测试发现多种装饰器定义的任务。"""
         (temp_task_dir / "task.py").write_text('''
-from chronflow import interval, cron, daily, hourly
+from symphra_scheduler import interval, cron, daily, hourly
 from datetime import datetime
 
 @interval(10)
@@ -272,7 +270,7 @@ async def hourly_task():
         """测试处理导入错误的模块。"""
         # 创建有语法错误的文件
         (temp_task_dir / "bad_task.py").write_text('''
-from chronflow import interval
+from symphra_scheduler import interval
 
 # 故意的语法错误
 @interval(10
@@ -282,7 +280,7 @@ async def broken_task():
 
         # 创建正常的文件
         (temp_task_dir / "good_task.py").write_text('''
-from chronflow import interval
+from symphra_scheduler import interval
 
 @interval(10)
 async def good_task():
@@ -302,7 +300,7 @@ async def good_task():
     def test_get_discovered_tasks(self, discovery, temp_task_dir):
         """测试获取已发现的任务列表。"""
         (temp_task_dir / "task.py").write_text('''
-from chronflow import interval
+from symphra_scheduler import interval
 
 @interval(10)
 async def task1():
@@ -339,7 +337,7 @@ class TestSchedulerIntegration:
         executed = []
 
         (temp_task_dir / "task.py").write_text(f'''
-from chronflow import interval
+from symphra_scheduler import interval
 
 executed = {id(executed)}
 

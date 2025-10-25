@@ -6,9 +6,9 @@
 import asyncio
 from datetime import datetime
 
-from chronflow import Scheduler
-from chronflow.decorators import interval
-from chronflow.task import Task, TaskConfig, ScheduleType
+from symphra_scheduler import Scheduler
+from symphra_scheduler.decorators import interval
+from symphra_scheduler.task import ScheduleType, Task, TaskConfig
 
 
 # 示例 1: 启用指标收集的调度器
@@ -25,7 +25,7 @@ async def example_with_metrics():
         print("Task executed!")  # noqa: T201
 
     # 注册任务
-    scheduler.register_task(my_task.__chronflow_task__)
+    scheduler.register_task(my_task.__symphra_scheduler_task__)
 
     # 启动调度器(运行 5 秒)
     async with scheduler.run_context():
@@ -101,7 +101,7 @@ async def example_monitor_failures():
             raise ValueError("Random failure!")
         return "success"
 
-    scheduler.register_task(failing_task.__chronflow_task__)
+    scheduler.register_task(failing_task.__symphra_scheduler_task__)
 
     # 运行一段时间
     async with scheduler.run_context():
@@ -169,7 +169,7 @@ async def example_prometheus_endpoint():
         await asyncio.sleep(0.1)
         return "ok"
 
-    scheduler.register_task(monitored_task.__chronflow_task__)
+    scheduler.register_task(monitored_task.__symphra_scheduler_task__)
 
     # 定义 HTTP 处理器
     async def metrics_handler(request):

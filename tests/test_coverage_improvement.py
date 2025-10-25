@@ -2,13 +2,13 @@
 import asyncio
 import os
 import signal
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 
 import pytest
 
-from chronflow import Scheduler, SchedulerConfig, interval
-from chronflow.decorators import set_global_scheduler
-from chronflow.task import Task, TaskConfig, ScheduleType
+from symphra_scheduler import Scheduler, interval
+from symphra_scheduler.decorators import set_global_scheduler
+from symphra_scheduler.task import ScheduleType, Task, TaskConfig
 
 
 class TestSchedulerSignalHandling:
@@ -116,9 +116,9 @@ class TestDecoratorEdgeCases:
         async def test_func():
             pass
 
-        # 函数应该有 __chronflow_task__ 属性
-        assert hasattr(test_func, "__chronflow_task__")
-        assert test_func.__chronflow_task__.config.name == "test_func"
+        # 函数应该有 __symphra_scheduler_task__ 属性
+        assert hasattr(test_func, "__symphra_scheduler_task__")
+        assert test_func.__symphra_scheduler_task__.config.name == "test_func"
 
 
 class TestConfigEdgeCases:
@@ -126,15 +126,16 @@ class TestConfigEdgeCases:
 
     def test_config_from_nonexistent_file(self):
         """测试从不存在的文件加载配置"""
-        from chronflow.config import SchedulerConfig
+        from symphra_scheduler.config import SchedulerConfig
 
         with pytest.raises(FileNotFoundError):
             SchedulerConfig.from_file("nonexistent.json")
 
     def test_config_from_unsupported_format(self):
         """测试从不支持的格式加载配置"""
-        from chronflow.config import SchedulerConfig
         import tempfile
+
+        from symphra_scheduler.config import SchedulerConfig
 
         with tempfile.NamedTemporaryFile(suffix=".txt", delete=False) as f:
             f.write(b"test")
@@ -224,12 +225,11 @@ class TestSchedulerEdgeCases:
 
         # 创建一个没有下次运行时间的任务
         # ONCE 类型但没有 start_time,next_run 会返回 None
-        from datetime import timezone
 
         task_config = TaskConfig(
             name="test_task",
             schedule_type=ScheduleType.ONCE,
-            start_time=datetime.now(timezone.utc) - timedelta(days=1),  # 过去的时间
+            start_time=datetime.now(UTC) - timedelta(days=1),  # 过去的时间
         )
         task = Task(func=dummy_task, config=task_config)
         scheduler.register_task(task)
@@ -245,7 +245,6 @@ class TestSchedulerEdgeCases:
     @pytest.mark.asyncio
     async def test_worker_handles_nonexistent_task(self):
         """测试 worker 处理不存在的任务"""
-        from datetime import timezone
 
         scheduler = Scheduler()
 
@@ -256,7 +255,7 @@ class TestSchedulerEdgeCases:
         await scheduler.backend.enqueue(
             task_id="nonexistent_task_id",
             task_name="nonexistent_task",
-            scheduled_time=datetime.now(timezone.utc),
+            scheduled_time=datetime.now(UTC),
             payload={"task_name": "nonexistent_task"},
             priority=0,
         )
@@ -281,7 +280,7 @@ class TestMetricsEdgeCases:
 
     def test_metrics_division_by_zero_protection(self):
         """测试除零保护"""
-        from chronflow.metrics import MetricsCollector
+        from symphra_scheduler.metrics import MetricsCollector
 
         collector = MetricsCollector()
 
@@ -295,7 +294,7 @@ class TestMetricsEdgeCases:
 
     def test_metrics_task_stats_isolation(self):
         """测试不同任务的统计隔离"""
-        from chronflow.metrics import MetricsCollector
+        from symphra_scheduler.metrics import MetricsCollector
 
         collector = MetricsCollector()
 
@@ -315,7 +314,7 @@ class TestLoggingAdapters:
 
     def test_structlog_adapter_with_exc_info(self):
         """测试 StructlogAdapter 处理 exc_info"""
-        from chronflow.logging import StructlogAdapter
+        from symphra_scheduler.logging import StructlogAdapter
 
         adapter = StructlogAdapter()
 
@@ -330,7 +329,8 @@ class TestLoggingExcInfo:
     def test_stdlib_adapter_error_with_exc_info(self):
         """测试 StdlibAdapter 处理 exc_info 参数"""
         import logging
-        from chronflow.logging import StdlibAdapter
+
+        from symphra_scheduler.logging import StdlibAdapter
 
         logger = logging.getLogger("test")
         adapter = StdlibAdapter(logger)
@@ -343,7 +343,8 @@ class TestLoggingExcInfo:
         """测试 LoguruAdapter 处理 exc_info 参数"""
         try:
             from loguru import logger
-            from chronflow.logging import LoguruAdapter
+
+            from symphra_scheduler.logging import LoguruAdapter
 
             adapter = LoguruAdapter(logger)
 

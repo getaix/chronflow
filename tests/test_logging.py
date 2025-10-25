@@ -5,7 +5,7 @@ from typing import Any
 
 import pytest
 
-from chronflow.logging import (
+from symphra_scheduler.logging import (
     LoggerAdapter,
     NoOpAdapter,
     StdlibAdapter,
@@ -126,7 +126,7 @@ class TestStructlogAdapter:
             import structlog
 
             logger = structlog.get_logger()
-            from chronflow.logging import StructlogAdapter
+            from symphra_scheduler.logging import StructlogAdapter
 
             adapter = StructlogAdapter(logger)
             # structlog 的 logger 可能被包装，所以我们只检查类型
@@ -140,7 +140,7 @@ class TestStructlogAdapter:
             import structlog
 
             logger = structlog.get_logger()
-            from chronflow.logging import StructlogAdapter
+            from symphra_scheduler.logging import StructlogAdapter
 
             adapter = StructlogAdapter(logger)
 
@@ -163,7 +163,7 @@ class TestLoguruAdapter:
         try:
             from loguru import logger
 
-            from chronflow.logging import LoguruAdapter
+            from symphra_scheduler.logging import LoguruAdapter
 
             adapter = LoguruAdapter(logger)
             assert adapter._logger == logger
@@ -175,7 +175,7 @@ class TestLoguruAdapter:
         try:
             from loguru import logger
 
-            from chronflow.logging import LoguruAdapter
+            from symphra_scheduler.logging import LoguruAdapter
 
             adapter = LoguruAdapter(logger)
 
@@ -199,7 +199,7 @@ class TestGetDefaultLogger:
             import structlog  # noqa: F401
 
             logger = get_default_logger()
-            from chronflow.logging import StructlogAdapter
+            from symphra_scheduler.logging import StructlogAdapter
 
             assert isinstance(logger, StructlogAdapter)
         except ImportError:

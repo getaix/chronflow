@@ -1,5 +1,5 @@
 [run]
-source = chronflow
+source = symphra_scheduler
 omit =
     */tests/*
     */test_*.py

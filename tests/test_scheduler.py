@@ -1,18 +1,18 @@
 """调度器测试。"""
 
 import asyncio
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta
 from typing import Any
 from zoneinfo import ZoneInfo
 
 import pytest
 
-from chronflow.backends.memory import MemoryBackend
-from chronflow.config import SchedulerConfig
-from chronflow.decorators import interval, set_global_scheduler
-from chronflow.logging import LoggerAdapter
-from chronflow.scheduler import Scheduler
-from chronflow.task import ScheduleType, Task, TaskConfig, TaskStatus
+from symphra_scheduler.backends.memory import MemoryBackend
+from symphra_scheduler.config import SchedulerConfig
+from symphra_scheduler.decorators import interval, set_global_scheduler
+from symphra_scheduler.logging import LoggerAdapter
+from symphra_scheduler.scheduler import Scheduler
+from symphra_scheduler.task import ScheduleType, Task, TaskConfig, TaskStatus
 
 
 class TestScheduler:
@@ -165,7 +165,7 @@ class TestScheduler:
         scheduler = Scheduler(config=config, use_global_scheduler=False)
 
         fake_pid = 4321
-        monkeypatch.setattr("chronflow.daemon.os.fork", lambda: fake_pid)
+        monkeypatch.setattr("symphra_scheduler.daemon.os.fork", lambda: fake_pid)
 
         result = await scheduler.start(daemon=True)
 
@@ -398,7 +398,7 @@ class TestScheduler:
         async def test_task():
             pass
 
-        from chronflow.logging import NoOpAdapter
+        from symphra_scheduler.logging import NoOpAdapter
 
         scheduler = Scheduler(logger=NoOpAdapter())
 
@@ -593,7 +593,7 @@ class TestScheduler:
 
     def test_set_logger(self):
         """测试设置日志适配器。"""
-        from chronflow.logging import NoOpAdapter
+        from symphra_scheduler.logging import NoOpAdapter
 
         scheduler = Scheduler()
         original_logger = scheduler._log
@@ -610,7 +610,7 @@ class TestScheduler:
         config = SchedulerConfig(enable_logging=False)
         scheduler = Scheduler(config=config)
 
-        from chronflow.logging import NoOpAdapter
+        from symphra_scheduler.logging import NoOpAdapter
 
         assert isinstance(scheduler._log, NoOpAdapter)
 
@@ -647,7 +647,7 @@ class TestScheduler:
         async def test_func():
             pass
 
-        from chronflow.logging import NoOpAdapter
+        from symphra_scheduler.logging import NoOpAdapter
 
         scheduler = Scheduler(logger=NoOpAdapter())
 
@@ -675,7 +675,7 @@ class TestScheduler:
         async def test_func():
             pass
 
-        from chronflow.logging import NoOpAdapter
+        from symphra_scheduler.logging import NoOpAdapter
 
         scheduler = Scheduler(logger=NoOpAdapter())
 
@@ -702,7 +702,7 @@ class TestScheduler:
     @pytest.mark.asyncio
     async def test_nonexistent_task_in_queue(self):
         """测试队列中存在不存在的任务。"""
-        from chronflow.logging import NoOpAdapter
+        from symphra_scheduler.logging import NoOpAdapter
 
         scheduler = Scheduler(logger=NoOpAdapter())
 

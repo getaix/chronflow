@@ -27,7 +27,7 @@ my_project/
 import asyncio
 from pathlib import Path
 
-from chronflow import Scheduler, SchedulerConfig
+from symphra_scheduler import Scheduler, SchedulerConfig
 
 
 def create_example_project_structure() -> Path:
@@ -45,7 +45,7 @@ def create_example_project_structure() -> Path:
     (user_dir / "__init__.py").write_text("")
     (user_dir / "task.py").write_text('''"""用户模块定时任务。"""
 
-from chronflow import cron, daily, interval
+from symphra_scheduler import cron, daily, interval
 
 
 @daily(hour=2, minute=0)
@@ -82,7 +82,7 @@ import asyncio
     (email_dir / "__init__.py").write_text("")
     (email_dir / "task.py").write_text('''"""邮件模块定时任务。"""
 
-from chronflow import interval, every
+from symphra_scheduler import interval, every
 
 
 @interval(4)  # 每4秒执行一次
@@ -110,7 +110,7 @@ import asyncio
     (analytics_dir / "__init__.py").write_text("")
     (analytics_dir / "task.py").write_text('''"""分析模块定时任务。"""
 
-from chronflow import daily, weekly, cron
+from symphra_scheduler import daily, weekly, cron
 
 
 @cron("*/6 * * * * *")  # 每6秒执行一次
@@ -153,45 +153,30 @@ def cleanup_example_project(base_dir: Path) -> None:
 async def main() -> None:
     """主程序入口。"""
 
-    print("=" * 70)
-    print("实际项目集成示例")
-    print("=" * 70)
 
     # 创建示例项目结构
-    print("\n📁 创建示例项目结构...")
     project_dir = create_example_project_structure()
-    print(f"✓ 项目目录: {project_dir.absolute()}")
 
     # 初始化调度器
-    print("\n⚙️  初始化调度器...")
     config = SchedulerConfig(
         max_workers=10,
         enable_logging=True,
         log_level="INFO",
     )
     scheduler = Scheduler(config=config)
-    print("✓ 调度器初始化完成")
 
     # 自动发现并注册所有模块的任务
-    print("\n🔍 自动发现任务...")
-    tasks = scheduler.discover_tasks_from_directory(
+    scheduler.discover_tasks_from_directory(
         directory=str(project_dir / "modules"),
         pattern="task.py",
         recursive=True,
     )
-    print(f"✓ 发现并注册了 {len(tasks)} 个任务\n")
 
     # 显示已注册的任务
-    print("📋 已注册的任务列表:")
-    print("-" * 70)
     for task_info in scheduler.list_tasks():
-        schedule_type = task_info['schedule_type']
-        print(f"  • {task_info['name']:<35} [{schedule_type}]")
+        task_info['schedule_type']
 
     # 启动调度器并运行一段时间
-    print("\n🚀 启动调度器...")
-    print("-" * 70)
-    print("运行 20 秒,观察任务执行情况...\n")
 
     async def run_scheduler() -> None:
         """运行调度器。"""
@@ -201,24 +186,15 @@ async def main() -> None:
     await run_scheduler()
 
     # 显示统计信息
-    print("\n" + "=" * 70)
-    print("📊 任务执行统计:")
-    print("-" * 70)
     for task_info in scheduler.list_tasks():
-        name = task_info['name']
-        total = task_info['total_runs']
-        success = task_info['successful_runs']
-        failed = task_info['failed_runs']
-        print(f"  • {name:<35} 总计: {total}, 成功: {success}, 失败: {failed}")
+        task_info['name']
+        task_info['total_runs']
+        task_info['successful_runs']
+        task_info['failed_runs']
 
     # 清理
-    print("\n🧹 清理示例项目...")
     cleanup_example_project(project_dir)
-    print("✓ 清理完成")
 
-    print("\n" + "=" * 70)
-    print("✓ 示例演示完成!")
-    print("=" * 70)
 
 
 if __name__ == "__main__":

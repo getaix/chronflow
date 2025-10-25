@@ -1,11 +1,9 @@
 """基础使用示例 - 演示最简单的定时任务用法。"""
 
 import asyncio
-import datetime
 import logging
-import time
 
-from chronflow import Scheduler, cron, interval
+from symphra_scheduler import Scheduler, cron, interval
 
 # 创建调度器实例
 scheduler = Scheduler()
@@ -15,7 +13,6 @@ logger = logging.getLogger(__name__)
 @interval(1)  # 每1秒执行一次
 async def hello_world():
     """简单的间隔任务示例。"""
-    print("hello world")
     # logger.info(f"hello world, {datetime.time()}")
 
 

@@ -2,7 +2,7 @@
 
 import pytest
 
-from chronflow.retry import RetryPolicy, RetryStrategy
+from symphra_scheduler.retry import RetryPolicy, RetryStrategy
 
 
 class TestRetryPolicy:

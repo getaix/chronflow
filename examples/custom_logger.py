@@ -3,14 +3,14 @@
 import asyncio
 from datetime import datetime
 
-from chronflow import Scheduler, interval
+from symphra_scheduler import Scheduler, interval
 
 
 def example_stdlib_logging():
     """示例 1: 使用 Python 标准库 logging。"""
     import logging
 
-    from chronflow.logging import StdlibAdapter
+    from symphra_scheduler.logging import StdlibAdapter
 
     # 配置标准库 logging
     logging.basicConfig(
@@ -35,7 +35,7 @@ def example_loguru():
     try:
         from loguru import logger
 
-        from chronflow.logging import LoguruAdapter
+        from symphra_scheduler.logging import LoguruAdapter
 
         # 配置 loguru
         logger.remove()  # 移除默认处理器
@@ -62,7 +62,7 @@ def example_loguru():
 
 def example_no_logging():
     """示例 3: 完全禁用日志输出。"""
-    from chronflow.logging import NoOpAdapter
+    from symphra_scheduler.logging import NoOpAdapter
 
     # 方法 1: 使用 NoOpAdapter
     scheduler = Scheduler(logger=NoOpAdapter())
@@ -82,7 +82,7 @@ def example_custom_logger():
     """示例 4: 自定义日志适配器。"""
     from typing import Any
 
-    from chronflow.logging import LoggerAdapter
+    from symphra_scheduler.logging import LoggerAdapter
 
     class ColoredConsoleAdapter(LoggerAdapter):
         """彩色控制台日志适配器。"""

@@ -6,7 +6,7 @@
 import asyncio
 from pathlib import Path
 
-from chronflow import Scheduler
+from symphra_scheduler import Scheduler
 
 
 async def main() -> None:
@@ -18,8 +18,6 @@ async def main() -> None:
     # ==========================================
     # 方法 1: 从目录自动发现任务
     # ==========================================
-    print("方法 1: 从目录自动发现任务")
-    print("-" * 60)
 
     # 假设项目结构如下:
     # my_app/
@@ -38,8 +36,6 @@ async def main() -> None:
     # ==========================================
     # 方法 2: 使用自定义文件名模式
     # ==========================================
-    print("\n方法 2: 使用自定义文件名模式")
-    print("-" * 60)
 
     # 假设项目使用 *_tasks.py 命名约定:
     # my_app/
@@ -58,8 +54,6 @@ async def main() -> None:
     # ==========================================
     # 方法 3: 从包中自动发现
     # ==========================================
-    print("\n方法 3: 从包中自动发现")
-    print("-" * 60)
 
     # 从已安装的包中扫描
     # tasks = scheduler.discover_tasks_from_package("my_app.tasks")
@@ -68,8 +62,6 @@ async def main() -> None:
     # ==========================================
     # 方法 4: 从指定模块列表导入
     # ==========================================
-    print("\n方法 4: 从指定模块列表导入")
-    print("-" * 60)
 
     # 精确指定要加载的模块
     # tasks = scheduler.discover_tasks_from_modules([
@@ -81,8 +73,6 @@ async def main() -> None:
     # ==========================================
     # 演示: 创建示例任务目录结构
     # ==========================================
-    print("\n演示: 创建示例任务目录结构")
-    print("-" * 60)
 
     # 创建示例目录
     example_dir = Path("example_tasks")
@@ -93,7 +83,7 @@ async def main() -> None:
     task_file.write_text('''"""示例任务模块。"""
 
 import asyncio
-from chronflow import cron, interval
+from symphra_scheduler import cron, interval
 
 
 @interval(10)
@@ -108,28 +98,22 @@ async def example_cron_task():
     print("📅 示例 Cron 任务执行中...")
 ''')
 
-    print(f"✓ 创建示例任务文件: {task_file}")
 
     # 从示例目录发现任务
     tasks = scheduler.discover_tasks_from_directory(str(example_dir))
-    print(f"✓ 发现并注册了 {len(tasks)} 个任务:")
-    for task in tasks:
-        print(f"  - {task.config.name} ({task.config.schedule_type.value})")
+    for _task in tasks:
+        pass
 
     # ==========================================
     # 查看已注册的所有任务
     # ==========================================
-    print("\n已注册的所有任务:")
-    print("-" * 60)
     task_list = scheduler.list_tasks()
-    for task_info in task_list:
-        print(f"• {task_info['name']:<30} [{task_info['schedule_type']}]")
+    for _task_info in task_list:
+        pass
 
     # ==========================================
     # 运行调度器(演示 10 秒)
     # ==========================================
-    print("\n启动调度器,运行 30 秒...")
-    print("-" * 60)
 
     async def run_for_seconds(seconds: int) -> None:
         """运行调度器指定秒数。"""
@@ -138,13 +122,11 @@ async def example_cron_task():
 
     await run_for_seconds(30)
 
-    print("\n✓ 演示完成!")
 
     # 清理示例文件
     import shutil
     if example_dir.exists():
         shutil.rmtree(example_dir)
-        print("✓ 清理完成")
 
 
 if __name__ == "__main__":

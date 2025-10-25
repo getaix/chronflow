@@ -1,7 +1,7 @@
 .PHONY: help install dev-install test coverage lint format type-check clean build setup docs-install docs-serve docs-build docs-clean
 
 help:
-	@echo "chronflow - 开发命令"
+	@echo "symphra_scheduler - 开发命令"
 	@echo ""
 	@echo "开发环境:"
 	@echo "  setup          - 初始化开发环境(使用 uv)"
@@ -45,18 +45,18 @@ test:
 	pytest tests/ -v
 
 coverage:
-	pytest tests/ -v --cov=chronflow --cov-report=html --cov-report=term
+	pytest tests/ -v --cov=symphra_scheduler --cov-report=html --cov-report=term
 	@echo "覆盖率报告已生成到 htmlcov/index.html"
 
 lint:
-	ruff check chronflow/ tests/
+	ruff check src/symphra_scheduler/ tests/
 
 format:
-	ruff check --fix chronflow/ tests/
-	black chronflow/ tests/
+	ruff check --fix src/symphra_scheduler/ tests/
+	black src/symphra_scheduler/ tests/
 
 type-check:
-	mypy chronflow/
+	mypy src/symphra_scheduler/
 
 clean:
 	rm -rf build/

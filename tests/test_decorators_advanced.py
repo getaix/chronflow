@@ -1,7 +1,7 @@
 """测试装饰器的高级功能和边界情况。"""
 import pytest
 
-from chronflow import (
+from symphra_scheduler import (
     Scheduler,
     daily,
     every,
@@ -10,7 +10,7 @@ from chronflow import (
     monthly,
     weekly,
 )
-from chronflow.decorators import _pending_tasks, set_global_scheduler
+from symphra_scheduler.decorators import _pending_tasks, set_global_scheduler
 
 
 class TestDecoratorErrorHandling:
@@ -272,9 +272,9 @@ class TestDecoratorSchedulerIntegration:
         async def test_func():
             pass
 
-        # 函数应该有 __chronflow_task__ 属性
-        assert hasattr(test_func, "__chronflow_task__")
-        assert test_func.__chronflow_task__.config.name == "test_func"
+        # 函数应该有 __symphra_scheduler_task__ 属性
+        assert hasattr(test_func, "__symphra_scheduler_task__")
+        assert test_func.__symphra_scheduler_task__.config.name == "test_func"
 
 
 class TestDecoratorCombinations:
@@ -292,7 +292,7 @@ class TestDecoratorCombinations:
             pass
 
         # 总秒数应该是 1*3600 + 30*60 + 45 = 5445
-        task = test_func.__chronflow_task__
+        task = test_func.__symphra_scheduler_task__
         assert task.config.interval_seconds == 5445
 
     def test_every_with_days(self):
@@ -303,7 +303,7 @@ class TestDecoratorCombinations:
             pass
 
         # 总秒数应该是 2*86400 = 172800
-        task = test_func.__chronflow_task__
+        task = test_func.__symphra_scheduler_task__
         assert task.config.interval_seconds == 172800
 
     def test_hourly_various_minutes(self):
@@ -314,7 +314,7 @@ class TestDecoratorCombinations:
             async def test_func():
                 pass
 
-            task = test_func.__chronflow_task__
+            task = test_func.__symphra_scheduler_task__
             # 验证 cron 表达式
             assert task.config.cron_expression == f"0 {minute} * * * *"
 
@@ -328,7 +328,7 @@ class TestDecoratorCombinations:
             async def test_func():
                 pass
 
-            task = test_func.__chronflow_task__
+            task = test_func.__symphra_scheduler_task__
             assert task.config.cron_expression == f"0 {minute} {hour} * * *"
 
     def test_weekly_all_days(self):
@@ -339,7 +339,7 @@ class TestDecoratorCombinations:
             async def test_func():
                 pass
 
-            task = test_func.__chronflow_task__
+            task = test_func.__symphra_scheduler_task__
             assert task.config.cron_expression == f"0 0 10 * * {day}"
 
     def test_monthly_various_days(self):
@@ -350,5 +350,5 @@ class TestDecoratorCombinations:
             async def test_func():
                 pass
 
-            task = test_func.__chronflow_task__
+            task = test_func.__symphra_scheduler_task__
             assert task.config.cron_expression == f"0 0 0 {day} * *"

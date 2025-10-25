@@ -6,10 +6,10 @@ from pathlib import Path
 
 import pytest
 
-from chronflow.backends import register_backend
-from chronflow.backends.base import QueueBackend
-from chronflow.backends.memory import MemoryBackend
-from chronflow.config import SchedulerConfig, TaskMetrics
+from symphra_scheduler.backends import register_backend
+from symphra_scheduler.backends.base import QueueBackend
+from symphra_scheduler.backends.memory import MemoryBackend
+from symphra_scheduler.config import SchedulerConfig, TaskMetrics
 
 
 class TestSchedulerConfig:
@@ -28,8 +28,8 @@ class TestSchedulerConfig:
         assert config.timezone == "UTC"
         assert config.persistence_enabled is False
         assert config.backend.name == "memory"
-        assert config.pid_file.name == "chronflow.pid"
-        assert config.process_name == "chronflow-scheduler"
+        assert config.pid_file.name == "symphra_scheduler.pid"
+        assert config.process_name == "symphra-scheduler"
 
     def test_custom_config(self):
         """测试自定义配置。"""

@@ -1,15 +1,13 @@
 """守护进程控制器测试。"""
 
-import asyncio
 import os
 import signal
-from pathlib import Path
-from unittest.mock import MagicMock, Mock, patch
+from unittest.mock import patch
 
 import pytest
 
-from chronflow.daemon import SchedulerDaemon
-from chronflow.scheduler import Scheduler
+from symphra_scheduler.daemon import SchedulerDaemon
+from symphra_scheduler.scheduler import Scheduler
 
 
 class TestSchedulerDaemon:
@@ -23,12 +21,12 @@ class TestSchedulerDaemon:
     @pytest.fixture
     def scheduler(self, temp_pid_file):
         """创建测试用调度器。"""
-        from chronflow.config import SchedulerConfig
+        from symphra_scheduler.config import SchedulerConfig
 
         config = SchedulerConfig(
             enable_logging=False,
             pid_file=temp_pid_file,
-            process_name="test-chronflow",
+            process_name="test-symphra-scheduler",
         )
         return Scheduler(config=config, use_global_scheduler=False)
 
@@ -40,12 +38,12 @@ class TestSchedulerDaemon:
     def test_daemon_initialization(self, daemon_controller, temp_pid_file):
         """测试守护进程控制器初始化。"""
         assert daemon_controller._pid_file == temp_pid_file
-        assert daemon_controller._process_name == "test-chronflow"
+        assert daemon_controller._process_name == "test-symphra-scheduler"
 
     @pytest.mark.asyncio
     async def test_start_on_windows_raises_error(self, daemon_controller, monkeypatch):
         """测试在 Windows 系统上启动守护进程抛出错误。"""
-        monkeypatch.setattr("chronflow.daemon.os.name", "nt")
+        monkeypatch.setattr("symphra_scheduler.daemon.os.name", "nt")
 
         with pytest.raises(RuntimeError, match="守护模式仅支持类 Unix 系统"):
             await daemon_controller.start()
@@ -72,7 +70,7 @@ class TestSchedulerDaemon:
         with patch.object(daemon_controller, "_is_process_alive", return_value=False):
             with patch.object(daemon_controller, "_is_zombie", return_value=True):
                 with patch.object(daemon_controller, "_reap_child"):
-                    with patch("chronflow.daemon.os.fork", return_value=99999):
+                    with patch("symphra_scheduler.daemon.os.fork", return_value=99999):
                         pid = await daemon_controller.start()
                         assert pid == 99999
                         # PID 文件由子进程写入,父进程不写入(修复后的行为)
@@ -80,7 +78,7 @@ class TestSchedulerDaemon:
     @pytest.mark.asyncio
     async def test_start_creates_pid_file(self, daemon_controller, temp_pid_file):
         """测试启动守护进程创建 PID 文件。"""
-        with patch("chronflow.daemon.os.fork", return_value=54321):
+        with patch("symphra_scheduler.daemon.os.fork", return_value=54321):
             pid = await daemon_controller.start()
 
             assert pid == 54321
@@ -100,23 +98,21 @@ class TestSchedulerDaemon:
         # 模拟进程在第一次检查时存活,后续检查时已死亡
         alive_checks = [True, False, False]  # 确保有足够的返回值
 
-        with patch("chronflow.daemon.os.kill") as mock_kill:
-            with patch.object(
-                daemon_controller, "_is_process_alive", side_effect=lambda _: alive_checks.pop(0)
-            ):
-                with patch.object(daemon_controller, "_reap_child"):
-                    with patch.object(daemon_controller, "_cleanup_pid_file"):
-                        result = await daemon_controller.stop(pid=mock_target)
+        with patch("symphra_scheduler.daemon.os.kill") as mock_kill, patch.object(
+            daemon_controller, "_is_process_alive", side_effect=lambda _: alive_checks.pop(0)
+        ), patch.object(daemon_controller, "_reap_child"):
+            with patch.object(daemon_controller, "_cleanup_pid_file"):
+                result = await daemon_controller.stop(pid=mock_target)
 
-                        assert result is True
-                        mock_kill.assert_called_once_with(mock_target, signal.SIGTERM)
+                assert result is True
+                mock_kill.assert_called_once_with(mock_target, signal.SIGTERM)
 
     @pytest.mark.asyncio
     async def test_stop_with_timeout_and_force_kill(self, daemon_controller):
         """测试超时后强制杀死进程。"""
         mock_target = 22222
 
-        with patch("chronflow.daemon.os.kill") as mock_kill:
+        with patch("symphra_scheduler.daemon.os.kill") as mock_kill:
             with patch.object(daemon_controller, "_is_process_alive", return_value=True):
                 with patch.object(daemon_controller, "_reap_child"):
                     with patch.object(daemon_controller, "_cleanup_pid_file"):
@@ -131,7 +127,7 @@ class TestSchedulerDaemon:
         """测试停止时处理进程不存在错误。"""
         mock_target = 33333
 
-        with patch("chronflow.daemon.os.kill", side_effect=ProcessLookupError):
+        with patch("symphra_scheduler.daemon.os.kill", side_effect=ProcessLookupError):
             with patch.object(daemon_controller, "_cleanup_pid_file") as mock_cleanup:
                 result = await daemon_controller.stop(pid=mock_target)
 
@@ -222,16 +218,16 @@ class TestSchedulerDaemon:
         assert daemon_controller._is_process_alive(current_pid) is True
 
         # 测试不存在的进程
-        with patch("chronflow.daemon.os.kill", side_effect=ProcessLookupError):
+        with patch("symphra_scheduler.daemon.os.kill", side_effect=ProcessLookupError):
             assert daemon_controller._is_process_alive(99999) is False
 
         # 测试权限不足的进程(保守认为存活)
-        with patch("chronflow.daemon.os.kill", side_effect=PermissionError):
+        with patch("symphra_scheduler.daemon.os.kill", side_effect=PermissionError):
             assert daemon_controller._is_process_alive(1) is True
 
     def test_reap_child(self, daemon_controller):
         """测试回收子进程资源。"""
-        with patch("chronflow.daemon.os.waitpid") as mock_waitpid:
+        with patch("symphra_scheduler.daemon.os.waitpid") as mock_waitpid:
             # 模拟子进程已被回收
             mock_waitpid.return_value = (0, 0)
             daemon_controller._reap_child(12345)
@@ -240,7 +236,7 @@ class TestSchedulerDaemon:
 
     def test_reap_child_handles_error(self, daemon_controller):
         """测试回收子进程时处理错误。"""
-        with patch("chronflow.daemon.os.waitpid", side_effect=ChildProcessError):
+        with patch("symphra_scheduler.daemon.os.waitpid", side_effect=ChildProcessError):
             # 应该不抛出异常
             daemon_controller._reap_child(12345)
 
@@ -248,7 +244,7 @@ class TestSchedulerDaemon:
         """测试根据进程名查找 PID。"""
         mock_output = b"1111\n2222\n3333\n"
 
-        with patch("chronflow.daemon.subprocess.check_output", return_value=mock_output):
+        with patch("symphra_scheduler.daemon.subprocess.check_output", return_value=mock_output):
             pids = daemon_controller._find_pids_by_name("test-process")
 
             assert pids == [1111, 2222, 3333]
@@ -258,7 +254,7 @@ class TestSchedulerDaemon:
         import subprocess
 
         with patch(
-            "chronflow.daemon.subprocess.check_output",
+            "symphra_scheduler.daemon.subprocess.check_output",
             side_effect=subprocess.CalledProcessError(1, "pgrep"),
         ):
             pids = daemon_controller._find_pids_by_name("nonexistent")
@@ -270,16 +266,16 @@ class TestSchedulerDaemon:
         import subprocess
 
         # 模拟僵尸进程
-        with patch("chronflow.daemon.subprocess.check_output", return_value=b"Z\n"):
+        with patch("symphra_scheduler.daemon.subprocess.check_output", return_value=b"Z\n"):
             assert daemon_controller._is_zombie(12345) is True
 
         # 模拟正常进程
-        with patch("chronflow.daemon.subprocess.check_output", return_value=b"S\n"):
+        with patch("symphra_scheduler.daemon.subprocess.check_output", return_value=b"S\n"):
             assert daemon_controller._is_zombie(12345) is False
 
         # 模拟进程不存在
         with patch(
-            "chronflow.daemon.subprocess.check_output",
+            "symphra_scheduler.daemon.subprocess.check_output",
             side_effect=subprocess.CalledProcessError(1, "ps"),
         ):
             assert daemon_controller._is_zombie(99999) is False

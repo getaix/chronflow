@@ -1,4 +1,4 @@
-# chronflow
+# Symphra Scheduler
 
 [![Python Version](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
@@ -24,29 +24,29 @@
 ### 基础安装(仅内存/SQLite后端)
 
 ```bash
-pip install chronflow
+pip install symphra_scheduler
 ```
 
 ### 安装 Redis 支持
 
 ```bash
-pip install chronflow[redis]
+pip install symphra-scheduler[redis]
 # 或
-pip install chronflow redis
+pip install symphra-scheduler redis
 ```
 
 ### 安装 RabbitMQ 支持
 
 ```bash
-pip install chronflow[rabbitmq]
+pip install symphra-scheduler[rabbitmq]
 # 或
-pip install chronflow aio-pika
+pip install symphra-scheduler aio-pika
 ```
 
 ### 完整安装
 
 ```bash
-pip install chronflow[all]
+pip install symphra-scheduler[all]
 ```
 
 ## 快速开始
@@ -55,7 +55,7 @@ pip install chronflow[all]
 
 ```python
 import asyncio
-from chronflow import Scheduler, cron, interval
+from symphra_scheduler import Scheduler, cron, interval
 
 # 创建调度器
 scheduler = Scheduler()
@@ -80,8 +80,8 @@ if __name__ == "__main__":
 ### 使用 Redis 后端
 
 ```python
-from chronflow import Scheduler, SchedulerConfig, cron
-from chronflow.backends import RedisBackend
+from symphra_scheduler import Scheduler, SchedulerConfig, cron
+from symphra_scheduler.backends import RedisBackend
 
 # 配置 Redis 后端
 backend = RedisBackend(url="redis://localhost:6379/0")
@@ -103,8 +103,8 @@ asyncio.run(main())
 ### 使用 SQLite 本地持久化
 
 ```python
-from chronflow import Scheduler, interval
-from chronflow.backends import SQLiteBackend
+from symphra_scheduler import Scheduler, interval
+from symphra_scheduler.backends import SQLiteBackend
 
 # SQLite 后端,任务持久化到本地文件
 backend = SQLiteBackend(db_path="scheduler.db")
@@ -123,7 +123,7 @@ asyncio.run(scheduler.start())
 适合模块化项目,自动扫描并注册任务:
 
 ```python
-from chronflow import Scheduler
+from symphra_scheduler import Scheduler
 
 scheduler = Scheduler()
 
@@ -155,7 +155,7 @@ asyncio.run(scheduler.start())
 
 ```python
 from datetime import datetime, timedelta
-from chronflow import Scheduler, scheduled, RetryPolicy
+from symphra_scheduler import Scheduler, scheduled, RetryPolicy
 
 scheduler = Scheduler()
 
@@ -177,7 +177,7 @@ async def important_task():
     await process_critical_data()
 
 # 一次性任务
-from chronflow.decorators import once
+from symphra_scheduler.decorators import once
 
 @once(at=datetime(2025, 12, 31, 23, 59, 59))
 async def new_year_celebration():
@@ -202,7 +202,7 @@ persistence_path = "scheduler_state.json"
 **Python 代码:**
 
 ```python
-from chronflow import Scheduler, SchedulerConfig
+from symphra_scheduler import Scheduler, SchedulerConfig
 
 # 从配置文件加载
 config = SchedulerConfig.from_file("config.toml")
@@ -220,7 +220,7 @@ scheduler = Scheduler(config=config)
 
 ## Cron 表达式
 
-chronflow 支持标准 Cron 表达式,并扩展支持秒级精度:
+Symphra Scheduler 支持标准 Cron 表达式,并扩展支持秒级精度:
 
 ```
 秒 分 时 日 月 周
@@ -287,7 +287,7 @@ print(task.metrics)
                  └─── 指标收集
 ```
 
-## 为什么选择 chronflow?
+## 为什么选择 Symphra Scheduler?
 
 ### vs Celery
 
@@ -307,21 +307,21 @@ print(task.metrics)
 
 ```bash
 # 克隆仓库
-git clone https://github.com/getaix/chronflow.git
-cd chronflow
+git clone https://github.com/getaix/symphra-scheduler.git
+cd symphra-scheduler
 
 # 安装开发依赖
 pip install -e ".[dev]"
 
 # 运行测试
-pytest tests/ -v --cov=chronflow --cov-report=html
+pytest tests/ -v --cov=symphra_scheduler --cov-report=html
 
 # 代码检查
-ruff check chronflow/
-mypy chronflow/
+ruff check symphra_scheduler/
+mypy symphra_scheduler/
 
 # 格式化代码
-black chronflow/
+black symphra_scheduler/
 ```
 
 ## 许可证
@@ -334,6 +334,6 @@ MIT License - 详见 [LICENSE](LICENSE) 文件
 
 ## 链接
 
-- 📖 [完整文档](https://getaix.github.io/chronflow)
-- 🐛 [问题反馈](https://github.com/getaix/chronflow/issues)
-- 📦 [PyPI](https://pypi.org/project/chronflow/)
+- 📖 [完整文档](https://getaix.github.io/symphra-scheduler)
+- 🐛 [问题反馈](https://github.com/getaix/symphra-scheduler/issues)
+- 📦 [PyPI](https://pypi.org/project/symphra-scheduler/)
