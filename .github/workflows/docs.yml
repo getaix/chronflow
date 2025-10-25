@@ -31,7 +31,7 @@ jobs:
       - name: Configure Pages
         uses: actions/configure-pages@v4
       - name: Install docs dependencies
-        run: uv pip install --system mkdocs mkdocs-material mkdocstrings[python] pymdown-extensions
+        run: uv pip install --system -e '.[docs]'
       - name: Install package with all extras
         run: uv pip install --system -e '.[all]'
       - name: Build site
